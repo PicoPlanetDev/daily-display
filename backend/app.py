@@ -3,6 +3,7 @@ from flask_cors import CORS
 from calendar_helper import Calendar
 from settings import Settings
 import requests
+from notifications import Notifications
 
 app = Flask(__name__)
 app.config.from_object(__name__)
@@ -10,6 +11,7 @@ cors = CORS(app, resources={r"/*": {"origins": "*"}})
 
 calendar = Calendar()
 settings = Settings() # config.ini is created if it doesn't exist
+notifications = Notifications()
 
 @app.route('/api/datetime', methods=['GET'])
 def get_datetimes():
@@ -75,12 +77,18 @@ def get_settings():
 
 @app.route('/api/test_notification', methods=['GET'])
 def test_notify():
-    post_url = settings.get_config_dict()["notification_url"]
-    requests.post(post_url, data=r"Test notification ✅".encode(encoding='utf-8'))
-    response = {
-        "status": "success",
-    }
-    return jsonify(response)
+    try:
+        notifications.notification("Test notification from backend", title="Test notification", priority="high", tags="white_check_mark")
+        response = {
+            "status": "success",
+        }
+        return jsonify(response)
+    except:
+        response = {
+            "status": "error",
+        }
+        return jsonify(response)
 
 if __name__ == '__main__':
+    notifications.notification("Daily Display is starting up", title="Backend started", priority="high", tags="rocket")
     app.run(debug=True)
