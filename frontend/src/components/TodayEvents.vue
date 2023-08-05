@@ -1,8 +1,22 @@
 <template>
-    <div class="row" v-for="event in events">
-        <div class="col">{{ event.all_day ? 'All day' : event.time_string }}</div>
-        <div class="col">{{ event.title }}</div>
-        <div class="col">{{ event.type }}</div>
+    <div class="row text-center">
+        <h3>Calendar</h3>
+    </div>
+    <div class="row mx-0 mb-3 p-3 border rounded bg-secondary-subtle" v-for="event in events">
+        <div class="row text-center mb-2" v-if="event.up_next">
+            <div class="col"><span class="badge bg-success fs-5">Up next {{ event.time_until }}</span></div>
+        </div>
+        <div class="row">
+            <div class="col-sm-2 fs-5" :class="event.all_day ? 'badge bg-primary' : ''">
+                {{ event.all_day ? 'All day' : event.time_string }}
+            </div>
+            <div class="col fs-5">
+                {{ event.title }}
+            </div>
+            <div class="col-sm-2 badge fs-5" v-if="event.type != null" :class="getEventTypeBgClass(event)">
+                {{ event.type }}
+            </div>
+        </div>
     </div>
 </template>
 
@@ -42,6 +56,13 @@ export default {
                 .catch(error => {
                     console.log(error);
                 });
+        },
+        getEventTypeBgClass(event) {
+            return {
+                'bg-secondary': event.type == 'Task',
+                'bg-success': event.type == 'Event',
+                'bg-warning': event.type == 'Appointment',
+            }
         }
     },
     created() {

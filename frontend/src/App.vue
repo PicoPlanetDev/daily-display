@@ -1,22 +1,7 @@
 <script setup>
-import DateTime from './components/DateTime.vue';
-import TodayEvents from './components/TodayEvents.vue';
+import { RouterLink, RouterView } from 'vue-router'
 </script>
 
 <template>
-  <main class="container-fluid">
-    <div class="row">
-      <div class="col">
-        <DateTime />
-      </div>
-    </div>
-    <div class="row">
-      <div class="col">
-        <TodayEvents />
-      </div>
-    </div>
-
-  </main>
+  <RouterView />
 </template>
-
-<style scoped></style>

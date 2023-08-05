@@ -1,5 +1,5 @@
 <template>
-    <div class="datetime">
+    <div class="mb-5 border rounded bg-secondary-subtle">
         <h1>{{ time }}</h1>
         <h2>{{ date }}</h2>
     </div>
