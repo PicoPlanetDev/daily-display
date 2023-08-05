@@ -30,7 +30,7 @@ class Settings():
         """
         return {
             "notification_url": self.config.get("Notifications", "notification_url"),
-            "notifications_enabled": self.config.get("Notifications", "notifications_enabled")
+            "notifications_enabled": self.config.getboolean("Notifications", "notifications_enabled")
         }
     
     def update_config(self, dictionary):

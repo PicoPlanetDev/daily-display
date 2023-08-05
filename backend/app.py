@@ -77,13 +77,13 @@ def get_settings():
 
 @app.route('/api/test_notification', methods=['GET'])
 def test_notify():
-    try:
-        notifications.notification("Test notification from backend", title="Test notification", priority="high", tags="white_check_mark")
+    result = notifications.notification("Test notification from backend", title="Test notification", priority="high", tags="white_check_mark")
+    if result:
         response = {
             "status": "success",
         }
         return jsonify(response)
-    except:
+    else:
         response = {
             "status": "error",
         }
