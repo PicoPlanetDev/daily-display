@@ -32,7 +32,7 @@ export default {
     },
     methods: {
         getEvents() {
-            const path = 'http://localhost:5000/api/events';
+            const path = '/events';
             axios.get(path)
                 .then(response => {
                     //this.events = response.data.events;

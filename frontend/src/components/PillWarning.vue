@@ -15,7 +15,7 @@ export default {
     },
     methods: {
         getWarningData() {
-            const path = 'http://localhost:5000/api/pill_warning';
+            const path = '/pill_warning';
             axios.get(path)
                 .then(response => {
                     if (response.data.warning == "wait") {

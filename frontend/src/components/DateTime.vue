@@ -18,7 +18,7 @@ export default {
     },
     methods: {
         getDateTime() {
-            const path = 'http://localhost:5000/api/datetime';
+            const path = '/datetime';
             axios.get(path)
                 .then(response => {
                     this.time = response.data.time;

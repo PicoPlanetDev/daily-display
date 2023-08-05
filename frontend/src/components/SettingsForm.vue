@@ -41,7 +41,7 @@ export default {
     },
     methods: {
         resetForm() {
-            const path = 'http://localhost:5000/api/settings';
+            const path = '/settings';
             axios.get(path)
                 .then(response => {
                     // response.data.settings.whatever
@@ -54,7 +54,7 @@ export default {
                 });
         },
         saveSettings() {
-            const path = 'http://localhost:5000/api/settings';
+            const path = '/settings';
             axios.post(path, {
                 notification_url: this.notificationUrl,
                 notifications_enabled: this.notificationSwitch
@@ -77,7 +77,7 @@ export default {
                 });
         },
         testNotification() {
-            const path = 'http://localhost:5000/api/test_notification';
+            const path = '/test_notification';
             axios.get(path)
                 .then(response => {
                     console.log(response);

@@ -14,7 +14,7 @@ export default {
     },
     methods: {
         getVersion() {
-            const path = 'http://localhost:5000/api/version';
+            const path = '/version';
             axios.get(path)
                 .then(response => {
                     this.version = response.data.version;
