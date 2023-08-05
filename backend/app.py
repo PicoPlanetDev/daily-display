@@ -11,10 +11,6 @@ cors = CORS(app, resources={r"/*": {"origins": "*"}})
 calendar = Calendar()
 settings = Settings() # config.ini is created if it doesn't exist
 
-@app.route('/api/ping', methods=['GET'])
-def ping():
-    return jsonify('pong')
-
 @app.route('/api/datetime', methods=['GET'])
 def get_datetimes():
     response = {
@@ -44,7 +40,7 @@ def get_version():
 def pill_warning():
     response = {
         "status": "success",
-        "warning": "wait",
+        "warning": "none",
         "pill_round": "morning",
     }
     return jsonify(response)

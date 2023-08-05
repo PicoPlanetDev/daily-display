@@ -1,4 +1,5 @@
 <script setup>
+import PillWarning from './PillWarning.vue';
 import Version from './Version.vue';
 import { RouterLink } from 'vue-router';
 </script>
@@ -11,7 +12,7 @@ import { RouterLink } from 'vue-router';
                     <Version />
                 </div>
                 <div class="col">
-
+                    <PillWarning />
                 </div>
                 <div class="col">
                     <RouterLink to="/settings" class="btn btn-outline-secondary btn-sm float-end">Settings</RouterLink>

@@ -1,5 +1,5 @@
 <template>
-    <div class="rounded"></div>
+    <div class="rounded fs-5 text-center" :class="warningBackground">{{ warningMessage }}</div>
 </template>
 
 <script>
@@ -7,9 +7,11 @@ import axios from 'axios';
 
 export default {
     name: 'PillWarning',
-    props: {
-        warningBackground: "bg-primary",
-        warningMessage: "Loading",
+    data() {
+        return {
+            warningBackground: "bg-primary",
+            warningMessage: "Loading...",
+        }
     },
     methods: {
         getWarningData() {

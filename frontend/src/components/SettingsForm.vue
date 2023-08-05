@@ -17,6 +17,7 @@
             <button type="submit" class="btn btn-outline-secondary" @click="testNotification()">Test notifications</button>
         </div>
         <div class="mb-3">
+            <RouterLink to="/" class="btn btn-danger me-3">Exit</RouterLink>
             <button type="submit" class="btn btn-primary" @click="saveSettings()">Save</button>
         </div>
     </div>
@@ -25,6 +26,7 @@
 <script>
 import axios from 'axios';
 import Alert from './Alert.vue';
+import { RouterLink } from 'vue-router';
 export default {
     name: 'SettingsForm',
     data() {
@@ -98,6 +100,6 @@ export default {
     created() {
         this.resetForm();
     },
-    components: { Alert }
+    components: { Alert, RouterLink }
 }
 </script>
