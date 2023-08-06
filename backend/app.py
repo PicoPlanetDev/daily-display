@@ -265,6 +265,14 @@ def print_receipt():
     }
     return jsonify(response)
 
+@app.route('/api/feed_printer', methods=['GET'])
+def feed_printer():
+    printer.end()
+    response = {
+        "status": "success",
+    }
+    return jsonify(response)
+
 if __name__ == '__main__':
     notifications.notification("Daily Display is starting up", title="Backend started", priority="high", tags="rocket")
     app.run(debug=True)

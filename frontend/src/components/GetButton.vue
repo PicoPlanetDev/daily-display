@@ -1,14 +1,18 @@
 <template>
-    <button class="btn btn-outline-secondary btn-sm" @click="printReceipt()">Print Receipt</button>
+    <button class="btn btn-outline-secondary btn-sm" @click="getPath()">{{ label }}</button>
 </template>
 
 <script>
 import axios from 'axios';
 export default {
-    name: 'PrintReceiptButton',
+    name: 'GetButton',
+    props: {
+        path: String,
+        label: String,
+    },
     methods: {
-        printReceipt() {
-            const path = '/print_receipt';
+        getPath() {
+            const path = path;
             axios.get(path)
                 .then(response => {
                     console.log(response);

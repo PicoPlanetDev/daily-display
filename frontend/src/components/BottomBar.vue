@@ -1,6 +1,6 @@
 <script setup>
 import PillWarning from './PillWarning.vue';
-import PrintReceiptButton from './PrintReceiptButton.vue';
+import GetButton from './GetButton.vue';
 import Version from './Version.vue';
 import { RouterLink } from 'vue-router';
 </script>
@@ -16,7 +16,8 @@ import { RouterLink } from 'vue-router';
                     <PillWarning />
                 </div>
                 <div class="col">
-                    <PrintReceiptButton />
+                    <GetButton path="/print_receipt" label="Print reciept" />
+                    <GetButton path="/feed_printer" label="Feed printer" />
                     <RouterLink to="/settings" class="btn btn-outline-secondary btn-sm float-end">Settings</RouterLink>
                 </div>
             </div>
