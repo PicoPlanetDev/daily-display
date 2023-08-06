@@ -4,6 +4,7 @@ from calendar_helper import Calendar
 from settings import Settings
 import requests
 from notifications import Notifications
+from pills import PillDatabase
 
 app = Flask(__name__)
 app.config.from_object(__name__)
@@ -12,6 +13,7 @@ cors = CORS(app, resources={r"/*": {"origins": "*"}})
 calendar = Calendar()
 settings = Settings() # config.ini is created if it doesn't exist
 notifications = Notifications()
+pillDatabase = PillDatabase()
 
 @app.route('/api/datetime', methods=['GET'])
 def get_datetimes():
@@ -88,6 +90,45 @@ def test_notify():
             "status": "error",
         }
         return jsonify(response)
+    
+@app.route('/api/pills', methods=['GET', 'POST', 'PUT', 'DELETE'])
+def pills():
+    if request.method == 'GET':
+        response = {
+            "status": "success",
+            "pills": pillDatabase.get_pills()
+        }
+        return jsonify(response)
+    elif request.method == 'POST':
+        data = request.get_json()
+        pillDatabase.add_pill(data['name'], data['round'], data['number'], data['dispenser'])
+        notifications.notification(f"{data['name']} added", title="New pill added", priority="default", tags="pill")
+        response = {
+            "status": "success",
+        }
+        return jsonify(response)
+    elif request.method == 'PUT':
+        data = request.get_json()
+        pillDatabase.update_pill(data['id'], data['name'], data['round'], data['number'], data['dispenser'])
+        notifications.notification(f"{data['name']} edited", title="Pill edited", priority="default", tags="pill")
+        response = {
+            "status": "success",
+        }
+        return jsonify(response)
+    elif request.method == 'DELETE':
+        data = request.get_json()
+        pillDatabase.delete_pill(data['id'])
+        notifications.notification(f"{data['name']} deleted", title="Pill deleted", priority="default", tags="pill")
+        response = {
+            "status": "success",
+        }
+        return jsonify(response)
+    # otherwise return an http status code 405 (method not allowed)
+    else:
+        response = {
+        "status": "error",
+        "message": "Method not allowed"}
+        return jsonify(response), 405
 
 if __name__ == '__main__':
     notifications.notification("Daily Display is starting up", title="Backend started", priority="high", tags="rocket")
