@@ -12,7 +12,7 @@ export default {
     },
     methods: {
         getPath() {
-            const path = path;
+            const path = this.path;
             axios.get(path)
                 .then(response => {
                     console.log(response);
