@@ -93,36 +93,159 @@ def test_notify():
     
 @app.route('/api/pills', methods=['GET', 'POST', 'PUT', 'DELETE'])
 def pills():
+    # read
     if request.method == 'GET':
         response = {
             "status": "success",
             "pills": pillDatabase.get_pills()
         }
         return jsonify(response)
+    
+    # create
     elif request.method == 'POST':
         data = request.get_json()
-        pillDatabase.add_pill(data['name'], data['round'], data['number'], data['dispenser'])
-        notifications.notification(f"{data['name']} added", title="New pill added", priority="default", tags="pill")
-        response = {
-            "status": "success",
-        }
-        return jsonify(response)
+        try:
+            pillDatabase.add_pill(
+                str(data['name']).strip(),
+                str(data['round']).strip(),
+                int(str(data['number']).strip()),
+                int(str(data['dispenser']).strip())
+                )
+        except:
+            response = {
+                "status": "error",
+                "message": "Invalid data"
+            }
+            return jsonify(response)
+        else:
+            notifications.notification(f"{data['name']} added", title="New pill added", priority="default", tags="pill")
+            response = {
+                "status": "success",
+            }
+            return jsonify(response)
+
+    # update    
     elif request.method == 'PUT':
         data = request.get_json()
-        pillDatabase.update_pill(data['id'], data['name'], data['round'], data['number'], data['dispenser'])
-        notifications.notification(f"{data['name']} edited", title="Pill edited", priority="default", tags="pill")
-        response = {
-            "status": "success",
-        }
-        return jsonify(response)
+        try:
+            pillDatabase.update_pill(
+                int(str(data['id']).strip()),
+                str(data['name']).strip(),
+                str(data['round']).strip(),
+                int(str(data['number']).strip()),
+                int(str(data['dispenser']).strip())
+                )
+        except:
+            response = {
+                "status": "error",
+                "message": "Invalid data"
+            }
+            return jsonify(response)
+        else:
+            notifications.notification(f"{data['name']} edited", title="Pill edited", priority="default", tags="pill")
+            response = {
+                "status": "success",
+            }
+            return jsonify(response)
+
+    # delete    
     elif request.method == 'DELETE':
         data = request.get_json()
-        pillDatabase.delete_pill(data['id'])
-        notifications.notification(f"{data['name']} deleted", title="Pill deleted", priority="default", tags="pill")
+        try:
+            pillDatabase.delete_pill(data['id'])
+        except:
+            response = {
+                "status": "error",
+                "message": "Invalid data"
+            }
+            return jsonify(response)
+        else:
+            notifications.notification(f"{data['name']} deleted", title="Pill deleted", priority="default", tags="pill")
+            response = {
+                "status": "success",
+            }
+            return jsonify(response)
+        
+    # otherwise return an http status code 405 (method not allowed)
+    else:
+        response = {
+        "status": "error",
+        "message": "Method not allowed"}
+        return jsonify(response), 405
+
+@app.route('/api/rounds', methods=['GET', 'POST', 'PUT', 'DELETE'])
+def rounds():
+    # read
+    if request.method == 'GET':
         response = {
             "status": "success",
+            "rounds": pillDatabase.get_rounds()
         }
         return jsonify(response)
+    
+    # create
+    elif request.method == 'POST':
+        data = request.get_json()
+        try:
+            pillDatabase.add_round(
+                str(data['name']).strip(),
+                str(data['time']).strip()
+                )
+        except:
+            response = {
+                "status": "error",
+                "message": "Invalid data"
+            }
+            return jsonify(response)
+        else:
+            notifications.notification(f"{data['name']} added", title="New round added", priority="default", tags="clock")
+            response = {
+                "status": "success",
+            }
+            return jsonify(response)
+        
+    # update
+    elif request.method == 'PUT':
+        data = request.get_json()
+        try:
+            pillDatabase.update_round(
+                int(str(data['id']).strip()),
+                    str(data['name']).strip(),
+                    str(data['time']).strip()
+                    )
+        except:
+            response = {
+                "status": "error",
+                "message": "Invalid data"
+            }
+            return jsonify(response)
+        else:
+            notifications.notification(f"{data['name']} edited", title="Round edited", priority="default", tags="clock")
+            response = {
+                "status": "success",
+            }
+            return jsonify(response)
+        
+    # delete
+    elif request.method == 'DELETE':
+        data = request.get_json()
+        try:
+            pillDatabase.delete_round(
+                int(str(data['id']).strip())
+                )
+        except:
+            response = {
+                "status": "error",
+                "message": "Invalid data"
+            }
+            return jsonify(response)
+        else:
+            notifications.notification(f"{data['name']} deleted", title="Round deleted", priority="default", tags="clock")
+            response = {
+                "status": "success",
+            }
+            return jsonify(response)
+        
     # otherwise return an http status code 405 (method not allowed)
     else:
         response = {

@@ -9,7 +9,10 @@
                 </button>
             </div>
             <div>
-                <div class="mt-3" v-if="pills.length == 0">No pills found. Click the button above to create one!</div>
+                <div class="mt-3" v-if="pills.length == 0">
+                    No pills found. Click the button above to create one!
+                    <hr>
+                </div>
                 <table class="table table-hover" v-if="pills.length > 0">
                     <thead>
                         <tr>
@@ -44,7 +47,6 @@
                     </tbody>
                 </table>
             </div>
-            <hr>
         </div>
     </div>
 
