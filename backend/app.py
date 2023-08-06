@@ -198,7 +198,7 @@ def rounds():
             }
             return jsonify(response)
         else:
-            notifications.notification(f"{data['name']} added", title="New round added", priority="default", tags="clock")
+            notifications.notification(f"{data['name']} added", title="New round added", priority="default", tags="clock4")
             response = {
                 "status": "success",
             }
@@ -220,7 +220,7 @@ def rounds():
             }
             return jsonify(response)
         else:
-            notifications.notification(f"{data['name']} edited", title="Round edited", priority="default", tags="clock")
+            notifications.notification(f"{data['name']} edited", title="Round edited", priority="default", tags="clock4")
             response = {
                 "status": "success",
             }
@@ -240,7 +240,7 @@ def rounds():
             }
             return jsonify(response)
         else:
-            notifications.notification(f"{data['name']} deleted", title="Round deleted", priority="default", tags="clock")
+            notifications.notification(f"{data['name']} deleted", title="Round deleted", priority="default", tags="clock4")
             response = {
                 "status": "success",
             }
@@ -252,6 +252,13 @@ def rounds():
         "status": "error",
         "message": "Method not allowed"}
         return jsonify(response), 405
+
+@app.route('/api/print_receipt', methods=['GET'])
+def print_receipt():
+    response = {
+        "status": "success",
+    }
+    return jsonify(response)
 
 if __name__ == '__main__':
     notifications.notification("Daily Display is starting up", title="Backend started", priority="high", tags="rocket")
