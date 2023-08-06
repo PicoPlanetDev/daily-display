@@ -5,6 +5,7 @@ from settings import Settings
 import requests
 from notifications import Notifications
 from pills import PillDatabase
+from printer import Printer
 
 app = Flask(__name__)
 app.config.from_object(__name__)
@@ -14,6 +15,7 @@ calendar = Calendar()
 settings = Settings() # config.ini is created if it doesn't exist
 notifications = Notifications()
 pillDatabase = PillDatabase()
+printer = Printer()
 
 @app.route('/api/datetime', methods=['GET'])
 def get_datetimes():
@@ -255,6 +257,9 @@ def rounds():
 
 @app.route('/api/print_receipt', methods=['GET'])
 def print_receipt():
+    date = calendar.get_date()
+    calendar_events = calendar.get_events()
+    printer.print_calendar(calendar_events, date)
     response = {
         "status": "success",
     }
