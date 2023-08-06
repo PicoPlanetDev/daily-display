@@ -23,7 +23,17 @@ class Calendar():
     def get_time(self, format="%-I:%M %p"):
         return datetime.today().strftime(format)
     
-    def get_events(self, start_date=datetime.today()-timedelta(days=0), end_date=datetime.today()+timedelta(days=1)):
+    def get_events_dict(self, start_date=datetime.today()-timedelta(days=0), end_date=datetime.today()+timedelta(days=1)):
+        events_list = self.get_events_list(start_date, end_date)
+
+        # convert to dict with keys as uid
+        events_dict = {}
+        for event in events_list:
+            events_dict[event["uid"]] = event
+        
+        return events_dict
+    
+    def get_events_list(self, start_date=datetime.today()-timedelta(days=0), end_date=datetime.today()+timedelta(days=1)):
         # update the url
         self.url = self.get_url()
 
@@ -61,7 +71,7 @@ class Calendar():
             event_timestamp = event_start.timestamp()
 
             # time until event
-            event_time_until = event_start - datetime.now().astimezone()+timedelta(hours=-12)
+            event_time_until = event_start - datetime.now().astimezone()#+timedelta(hours=-12)
             event_time_until_formatted = ""
             if event_time_until.days > 0:
                 event_time_until_formatted = str(event_time_until.days) + pluralize(" day", event_time_until.days)
@@ -101,9 +111,4 @@ class Calendar():
                 found_up_next = True
                 break
 
-        # convert to dict with keys as uid
-        events_dict = {}
-        for event in events_list:
-            events_dict[event["uid"]] = event
-        
-        return events_dict
+        return events_list

@@ -30,7 +30,7 @@ def get_datetimes():
 def get_events():
     response = {
         "status": "success",
-        "events": calendar.get_events()
+        "events": calendar.get_events_dict()
     }
     return jsonify(response)
 
@@ -258,7 +258,7 @@ def rounds():
 @app.route('/api/print_receipt', methods=['GET'])
 def print_receipt():
     date = calendar.get_date()
-    calendar_events = calendar.get_events()
+    calendar_events = calendar.get_events_list()
     printer.print_calendar(calendar_events, date)
     response = {
         "status": "success",

@@ -23,7 +23,8 @@ class Printer:
         self.printer.setSize('S')
         self.printer.justify('L')
         for event in calendar:
-            line = f"{event['start']} - {event['title']})"
+            print(event)
+            line = f"{event['time_string']} - {event['title']})"
             if event['type'] == "Task":
                 line = f"[ ] {line}"
             else:
