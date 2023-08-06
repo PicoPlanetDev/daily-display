@@ -3,7 +3,7 @@ import configparser
 class Settings():
     def __init__(self, path='config.ini'):
         self.path = path
-        self.config = configparser.ConfigParser()
+        self.config = configparser.ConfigParser(interpolation=None)
         # If config file exists, read it
         if self.config.read(path):
             print("Config file found")
@@ -16,16 +16,15 @@ class Settings():
         """
         Create a config file
         """
-        config = configparser.ConfigParser()
-        config.add_section("Notifications")
-        config.set("Notifications", "notification_url", "https://ntfy.sh/mytopic")
-        config.set("Notifications", "notifications_enabled", "true")
+        self.config.add_section("Notifications")
+        self.config.set("Notifications", "notification_url", "https://ntfy.sh/mytopic")
+        self.config.set("Notifications", "notifications_enabled", "true")
 
-        config.add_section("Calendar")
-        config.set("Calendar", "calendar_url", "https://linktoicsfile")
+        self.config.add_section("Calendar")
+        self.config.set("Calendar", "calendar_url", "https://linktoicsfile")
         
         with open(self.path, "w") as config_file:
-            config.write(config_file)
+            self.config.write(config_file)
 
     def get_config_dict(self):
         """

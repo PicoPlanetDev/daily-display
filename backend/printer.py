@@ -1,8 +1,12 @@
 from Adafruit_Thermal import *
+from serial import SerialException
 
 class Printer:
     def __init__(self):
-        self.printer = Adafruit_Thermal("/dev/ttyS5", 9600, timeout=5)
+        try:
+            self.printer = Adafruit_Thermal("/dev/ttyS5", 9600, timeout=5)
+        except SerialException as e:
+            print("Printer not found")
 
     def print_calendar(self, calendar, date):
         self.start()
