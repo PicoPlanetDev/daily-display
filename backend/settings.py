@@ -20,6 +20,9 @@ class Settings():
         config.add_section("Notifications")
         config.set("Notifications", "notification_url", "https://ntfy.sh/mytopic")
         config.set("Notifications", "notifications_enabled", "true")
+
+        config.add_section("Calendar")
+        config.set("Calendar", "calendar_url", "https://linktoicsfile")
         
         with open(self.path, "w") as config_file:
             config.write(config_file)
@@ -30,7 +33,8 @@ class Settings():
         """
         return {
             "notification_url": self.config.get("Notifications", "notification_url"),
-            "notifications_enabled": self.config.getboolean("Notifications", "notifications_enabled")
+            "notifications_enabled": self.config.getboolean("Notifications", "notifications_enabled"),
+            "calendar_url": self.config.get("Calendar", "calendar_url")
         }
     
     def update_config(self, dictionary):
@@ -40,6 +44,7 @@ class Settings():
         try:
             self.config.set("Notifications", "notification_url", dictionary["notification_url"])
             self.config.set("Notifications", "notifications_enabled", "true" if dictionary["notifications_enabled"] else "false")
+            self.config.set("Calendar", "calendar_url", dictionary["calendar_url"])
         except KeyError as e:
             print("KeyError: {}".format(e))
             return False

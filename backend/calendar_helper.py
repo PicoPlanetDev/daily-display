@@ -1,8 +1,7 @@
 from icalevents import icalevents
 from datetime import datetime, timedelta
-from dotenv import load_dotenv
-import os
 import re
+from settings import Settings
 
 def pluralize(string, count):
     if count == 1:
@@ -12,11 +11,11 @@ def pluralize(string, count):
 
 class Calendar():
     def __init__(self):
+        self.settings = Settings()
         self.url = self.get_url()
 
     def get_url(self):
-        load_dotenv()
-        return os.getenv("SECRET_ICAL_URL")
+        return self.settings.config.get("Calendar", "calendar_url")
 
     def get_date(self, format="%A, %b %-d"):
         return datetime.today().strftime(format)
@@ -25,6 +24,9 @@ class Calendar():
         return datetime.today().strftime(format)
     
     def get_events(self, start_date=datetime.today()-timedelta(days=0), end_date=datetime.today()+timedelta(days=1)):
+        # update the url
+        self.url = self.get_url()
+
         calendar_events = icalevents.events(self.url, start=start_date, end=end_date)
 
         events_list = []
