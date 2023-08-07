@@ -1,3 +1,9 @@
+# ensure that the thermal printer module is installed
+import os
+if not os.path.isfile('Adafruit_Thermal.py'):
+    print("Downloading Adafruit Thermal Printer module")
+    os.system('wget -O Adafruit_Thermal.py https://raw.githubusercontent.com/adafruit/Python-Thermal-Printer/master/Adafruit_Thermal.py')
+
 from Adafruit_Thermal import *
 from serial import SerialException
 
