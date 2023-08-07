@@ -21,7 +21,7 @@ class Settings():
         self.config.set("Notifications", "notifications_enabled", "true")
 
         self.config.add_section("Calendar")
-        self.config.set("Calendar", "calendar_url", "https://linktoicsfile")
+        self.config.set("Calendar", "calendar_url", "https://linktoicsfile.ics")
         
         with open(self.path, "w") as config_file:
             self.config.write(config_file)

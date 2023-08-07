@@ -2,6 +2,12 @@
     <Alert v-if="showAlert" :message="alertMessage" :style="alertStyle" />
     <div class="col-sm-6">
         <div class="mb-3">
+            <label for="calendarUrl" class="form-label">Calendar URL</label>
+            <input type="url" class="form-control" id="calendarUrl" aria-describedby="calendarUrl" v-model="calendarUrl">
+            <div id="emailHelp" class="form-text">The url should end in an <span class="font-monospace">.ics</span> file,
+                such as <span class="font-monospace">basic.ics</span></div>
+        </div>
+        <div class="mb-3">
             <label for="notificationUrl" class="form-label">Notification Webhook</label>
             <input type="url" class="form-control" id="notificationUrl" aria-describedby="notificationUrl"
                 v-model="notificationUrl">
@@ -14,7 +20,7 @@
             <label class="form-check-label" for="notificationsCheck">Send notifications</label>
         </div>
         <div class="mb-3">
-            <button type="submit" class="btn btn-outline-secondary" @click="testNotification()">Test notifications</button>
+            <button type="button" class="btn btn-outline-secondary" @click="testNotification()">Test notifications</button>
         </div>
         <div class="mb-3">
             <RouterLink to="/" class="btn btn-danger me-3">Exit</RouterLink>
@@ -33,6 +39,7 @@ export default {
         return {
             notificationUrl: '',
             notificationSwitch: false,
+            calendarUrl: '',
             // alert
             alertMessage: '',
             alertStyle: '',
@@ -48,6 +55,7 @@ export default {
                     // fill in the form with the data
                     this.notificationUrl = response.data.settings.notification_url;
                     this.notificationSwitch = response.data.settings.notifications_enabled;
+                    this.calendarUrl = response.data.settings.calendar_url;
                 })
                 .catch(error => {
                     console.log(error);
@@ -57,7 +65,8 @@ export default {
             const path = '/settings';
             axios.post(path, {
                 notification_url: this.notificationUrl,
-                notifications_enabled: this.notificationSwitch
+                notifications_enabled: this.notificationSwitch,
+                calendarUrl: this.calendarUrl,
             })
                 .then(response => {
                     console.log(response);
