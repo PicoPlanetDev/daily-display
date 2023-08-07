@@ -18,6 +18,7 @@ import { RouterLink } from 'vue-router';
                 <div class="col">
                     <GetButton path="/print_receipt" label="Print reciept" />
                     <GetButton path="/feed_printer" label="Feed printer" />
+                    <GetButton path="/print_qr" label="Print QR" />
                     <RouterLink to="/settings" class="btn btn-outline-secondary btn-sm float-end">Settings</RouterLink>
                 </div>
             </div>

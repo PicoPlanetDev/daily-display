@@ -4,3 +4,4 @@ Flask-cors
 python-dotenv
 requests
 pyserial
+qrcode

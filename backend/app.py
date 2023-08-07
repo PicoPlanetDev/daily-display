@@ -6,6 +6,9 @@ import requests
 from notifications import Notifications
 from pills import PillDatabase
 from printer import Printer
+import os
+import qrcode
+import local_ip
 
 app = Flask(__name__)
 app.config.from_object(__name__)
@@ -268,6 +271,18 @@ def print_receipt():
 @app.route('/api/feed_printer', methods=['GET'])
 def feed_printer():
     printer.end()
+    response = {
+        "status": "success",
+    }
+    return jsonify(response)
+
+@app.route('/api/print_qr', methods=['GET'])
+def print_qr():
+    ip = local_ip.get_ip()
+    link = f"http://{ip}:5173"
+    qr = qrcode.make(link)
+    printer.print_qr(qr, link)
+    
     response = {
         "status": "success",
     }

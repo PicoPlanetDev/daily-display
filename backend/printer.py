@@ -42,3 +42,12 @@ class Printer:
         self.printer.sleep()
         self.printer.wake()
         self.printer.setDefault()
+
+    def print_qr(self, qr, link):
+        self.start()
+        self.printer.justify('C')
+        self.printer.setSize('S')
+        self.printer.println("Scan to access")
+        self.printer.println(link)
+        self.printer.printImage(qr)
+        self.end()
