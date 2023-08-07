@@ -10,7 +10,7 @@ import App from './App.vue'
 import router from './router'
 
 import axios from 'axios'
-axios.defaults.baseURL = 'http://localhost:5000/api';
+axios.defaults.baseURL = window.location.href.split(':5173')[0] + ":5000/api";
 
 const app = createApp(App)
 
