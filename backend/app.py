@@ -7,6 +7,7 @@ from notifications import Notifications
 from pills import PillDatabase
 from printer import Printer
 import os
+import subprocess
 import qrcode
 import local_ip
 
@@ -278,11 +279,20 @@ def feed_printer():
 
 @app.route('/api/print_qr', methods=['GET'])
 def print_qr():
+    # get local ip address
     ip = local_ip.get_ip()
     link = f"http://{ip}:5173"
     qr = qrcode.make(link)
-    printer.print_qr(qr, link)
-    
+    printer.print_qr(qr, link, "Access on the local network")
+
+    # attempt to get tailscale ip address
+    result = subprocess.check_output(['tailscale', 'ip']).decode("utf-8")
+    if "command not found" not in result:
+        ip = result.split()[0]
+        link = f"http://{ip}:5173"
+        qr = qrcode.make(link)
+        printer.print_qr(qr, link, "Access with Tailscale enabled")
+
     response = {
         "status": "success",
     }
