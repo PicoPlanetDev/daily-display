@@ -6,8 +6,13 @@ import SettingsForm from '../components/SettingsForm.vue';
 
 <template>
   <div class="container">
-    <h1>Settings</h1>
+    <div class="fs-1"><i class="bi bi-gear-wide-connected"></i> Settings</div>
+    <div class="lead">Changing some of these settings will require Daily Display to restart.</div>
+    <hr>
     <SettingsForm />
+    <div class="fs-2"><i class="bi bi-capsule-pill"></i> Pill Dispenser</div>
+    <div class="lead">These settings apply immediately</div>
+    <hr>
     <PillList />
     <RoundList />
   </div>

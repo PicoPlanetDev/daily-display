@@ -1,30 +1,67 @@
 <template>
     <Alert v-if="showAlert" :message="alertMessage" :style="alertStyle" />
-    <div class="col-sm-6">
-        <div class="mb-3">
+    <div class="col">
+        <!-- Calendar -->
+        <div class="fs-4"><i class="bi bi-calendar-date"></i> Calendar</div>
+        <hr>
+        <div class="mb-3 col-lg-6">
             <label for="calendarUrl" class="form-label">Calendar URL</label>
             <input type="url" class="form-control" id="calendarUrl" aria-describedby="calendarUrl" v-model="calendarUrl">
             <div id="emailHelp" class="form-text">The url should end in an <span class="font-monospace">.ics</span> file,
                 such as <span class="font-monospace">basic.ics</span></div>
         </div>
-        <div class="mb-3">
-            <label for="notificationUrl" class="form-label">Notification Webhook</label>
-            <input type="url" class="form-control" id="notificationUrl" aria-describedby="notificationUrl"
-                v-model="notificationUrl">
-            <div id="emailHelp" class="form-text">Daily Display will make a POST request to this URL (designed for <a
-                    target="_blank" href="https://ntfy.sh">ntfy.sh</a>)</div>
-        </div>
+        <!-- Notifications -->
+        <div class="fs-4"><i class="bi bi-bell"></i> Notifications</div>
+        <hr>
         <div class="form-check form-switch mb-3">
             <input class="form-check-input" type="checkbox" role="switch" id="notificationsCheck"
                 v-model="notificationSwitch">
-            <label class="form-check-label" for="notificationsCheck">Send notifications</label>
+            <label class="form-check-label" for="notificationsCheck">Notifications enabled</label>
+        </div>
+        <div class="mb-3 col-lg-6">
+            <label for="notificationUrl" class="form-label">Notification Webhook</label>
+            <input type="url" class="form-control" id="notificationUrl" aria-describedby="notificationUrl"
+                v-model="notificationUrl" :disabled="notificationSwitch ? false : true">
+            <div id="emailHelp" class="form-text">Daily Display will make a POST request to this URL (designed for <a
+                    target="_blank" href="https://ntfy.sh">ntfy.sh</a>)</div>
         </div>
         <div class="mb-3">
-            <button type="button" class="btn btn-outline-secondary" @click="testNotification()">Test notifications</button>
+            <button type="button" class="btn btn-outline-secondary" @click="testNotification()"
+                :disabled="notificationSwitch ? false : true">Test notifications</button>
         </div>
+        <!-- Printer -->
+        <div class="fs-4"><i class="bi bi-printer"></i> Printer</div>
+        <hr>
+        <div class="form-check form-switch mb-3">
+            <input class="form-check-input" type="checkbox" role="switch" id="printerCheck" v-model="printerEnabled">
+            <label class="form-check-label" for="printerCheck">Printer enabled</label>
+        </div>
+        <div class="mb-3 col-lg-6">
+            <label for="printerPort" class="form-label">Printer Port</label>
+            <input type="text" class="form-control" id="printerPort" aria-describedby="printerPort" v-model="printerPort"
+                :disabled="printerEnabled ? false : true">
+            <div id="emailHelp" class="form-text">The serial port that the printer is connected to, such as <span
+                    class="font-monospace">/dev/ttyUSB0</span></div>
+        </div>
+        <div class="mb-3 col-lg-6">
+            <label for="printerBaudrate" class="form-label">Printer Baudrate</label>
+            <input type="text" class="form-control" id="printerBaudrate" aria-describedby="printerBaudrate"
+                v-model="printerBaudrate" :disabled="printerEnabled ? false : true">
+            <div id="emailHelp" class="form-text">The speed of communication of the printer, such as 9600</div>
+        </div>
+        <!-- Exit and save buttons -->
+        <hr>
         <div class="mb-3">
-            <RouterLink to="/" class="btn btn-danger me-3">Exit</RouterLink>
-            <button type="submit" class="btn btn-primary" @click="saveSettings()">Save</button>
+            <RouterLink to="/" class="btn btn-outline-danger me-3"><i class="bi bi-x-lg"></i> Cancel</RouterLink>
+            <button type="reset" class="btn btn-outline-danger me-3" @click="resetForm()"><i class="bi bi-trash"></i>
+                Discard</button>
+            <button type="submit" class="btn btn-primary me-3" @click="saveSettings(exit = false)"><i
+                    class="bi bi-save"></i>
+                Save</button>
+            <button type="submit" class="btn btn-primary me-3" @click="saveSettings(exit = true)"><i
+                    class="bi bi-door-open"></i>
+                Save
+                and exit</button>
         </div>
     </div>
 </template>
@@ -40,6 +77,9 @@ export default {
             notificationUrl: '',
             notificationSwitch: false,
             calendarUrl: '',
+            printerEnabled: true,
+            printerPort: '',
+            printerBaudrate: '',
             // alert
             alertMessage: '',
             alertStyle: '',
@@ -56,17 +96,25 @@ export default {
                     this.notificationUrl = response.data.settings.notification_url;
                     this.notificationSwitch = response.data.settings.notifications_enabled;
                     this.calendarUrl = response.data.settings.calendar_url;
+                    this.printerEnabled = response.data.settings.printer_enabled;
+                    this.printerPort = response.data.settings.printer_port;
+                    this.printerBaudrate = response.data.settings.printer_baudrate;
+
+                    this.scrollToTop();
                 })
                 .catch(error => {
                     console.log(error);
                 });
         },
-        saveSettings() {
+        saveSettings(exit = false) {
             const path = '/settings';
             axios.post(path, {
                 notification_url: this.notificationUrl,
                 notifications_enabled: this.notificationSwitch,
-                calendarUrl: this.calendarUrl,
+                calendar_url: this.calendarUrl,
+                printer_enabled: this.printerEnabled,
+                printer_port: this.printerPort,
+                printer_baudrate: this.printerBaudrate,
             })
                 .then(response => {
                     console.log(response);
@@ -74,6 +122,11 @@ export default {
                         this.alertMessage = "Settings saved successfully";
                         this.alertStyle = "alert-success";
                         this.showAlert = true;
+                        this.scrollToTop();
+
+                        if (exit) {
+                            this.$router.push('/');
+                        }
                     }
                     else {
                         this.alertMessage = "Error saving settings";
@@ -104,6 +157,10 @@ export default {
                 .catch(error => {
                     console.log(error);
                 });
+        },
+        scrollToTop() {
+            document.body.scrollTop = 0;
+            document.documentElement.scrollTop = 0;
         }
     },
     created() {

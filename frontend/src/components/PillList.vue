@@ -1,7 +1,7 @@
 <template>
     <div class="row">
         <div class="col-sm-10">
-            <h2>Pills</h2>
+            <h3><i class="bi bi-prescription"></i> Pills</h3>
             <hr>
             <div>
                 <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addPillModal">

@@ -6,15 +6,29 @@ if not os.path.isfile('Adafruit_Thermal.py'):
 
 from Adafruit_Thermal import *
 from serial import SerialException
+import settings
 
 class Printer:
     def __init__(self):
-        try:
-            self.printer = Adafruit_Thermal("/dev/ttyS5", 9600, timeout=5)
-        except SerialException as e:
-            print("Printer not found")
+        self.config = settings.Settings()
+        self.config_dict = self.config.get_config_dict()
+        self.printer_enabled = self.config_dict["printer_enabled"]
+        self.printer_port = self.config_dict["printer_port"]
+        self.printer_baudrate = self.config_dict["printer_baudrate"]
+
+        if self.printer_enabled:
+            try:
+                self.printer = Adafruit_Thermal(self.printer_port, self.printer_baudrate, timeout=5)
+            except SerialException as e:
+                print("Printer not found")
+                # disable printer if it's not found
+                self.printer_enabled = False
+                self.config.set_key("Printer", "printer_enabled", "false")
 
     def print_calendar(self, calendar, date):
+        if not self.printer_enabled:
+            return
+
         self.start()
 
         # calendar is the dictionary of events
@@ -50,6 +64,9 @@ class Printer:
         self.printer.setDefault()
 
     def print_qr(self, qr, link, message):
+        if not self.printer_enabled:
+            return
+
         self.start()
         self.printer.justify('C')
         self.printer.setSize('S')

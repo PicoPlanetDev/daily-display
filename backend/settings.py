@@ -22,6 +22,11 @@ class Settings():
 
         self.config.add_section("Calendar")
         self.config.set("Calendar", "calendar_url", "https://linktoicsfile.ics")
+
+        self.config.add_section("Printer")
+        self.config.set("Printer", "printer_enabled", "true")
+        self.config.set("Printer", "printer_port", "/dev/ttyS5")
+        self.config.set("Printer", "printer_baudrate", "9600")
         
         with open(self.path, "w") as config_file:
             self.config.write(config_file)
@@ -33,7 +38,10 @@ class Settings():
         return {
             "notification_url": self.config.get("Notifications", "notification_url"),
             "notifications_enabled": self.config.getboolean("Notifications", "notifications_enabled"),
-            "calendar_url": self.config.get("Calendar", "calendar_url")
+            "calendar_url": self.config.get("Calendar", "calendar_url"),
+            "printer_enabled": self.config.getboolean("Printer", "printer_enabled"),
+            "printer_port": self.config.get("Printer", "printer_port"),
+            "printer_baudrate": self.config.getint("Printer", "printer_baudrate")
         }
     
     def update_config(self, dictionary):
@@ -44,6 +52,9 @@ class Settings():
             self.config.set("Notifications", "notification_url", dictionary["notification_url"])
             self.config.set("Notifications", "notifications_enabled", "true" if dictionary["notifications_enabled"] else "false")
             self.config.set("Calendar", "calendar_url", dictionary["calendar_url"])
+            self.config.set("Printer", "printer_enabled", "true" if dictionary["printer_enabled"] else "false")
+            self.config.set("Printer", "printer_port", dictionary["printer_port"])
+            self.config.set("Printer", "printer_baudrate", str(dictionary["printer_baudrate"]))
         except KeyError as e:
             print("KeyError: {}".format(e))
             return False
@@ -53,3 +64,8 @@ class Settings():
             self.config.write(configfile)
         
         return True
+    
+    def set_key(self, section, key, value):
+        self.config.set(section, key, value)
+        with open(self.path, 'w') as configfile:
+            self.config.write(configfile)
