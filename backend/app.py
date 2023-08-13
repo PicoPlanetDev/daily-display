@@ -10,6 +10,10 @@ import os
 import subprocess
 import qrcode
 import local_ip
+from apscheduler.schedulers.background import BackgroundScheduler
+
+scheduler = BackgroundScheduler()
+scheduler.start()
 
 app = Flask(__name__)
 app.config.from_object(__name__)
@@ -20,6 +24,33 @@ settings = Settings() # config.ini is created if it doesn't exist
 notifications = Notifications()
 pillDatabase = PillDatabase()
 printer = Printer()
+
+def schedule_rounds():
+    for round in pillDatabase.get_rounds():
+        round_name = round['name']
+        try:
+            scheduler.remove_job(round_name)
+        except:
+            print("Job not found")
+        
+        round_time = round['time'].split(":")
+        round_hour = int(round_time[0])
+        round_minute = int(round_time[1])
+        #print(f"Added job {name} at {round_hour}:{round_minute}")
+        scheduler.add_job(handle_round, 'cron', hour=round_hour, minute=round_minute, id=round_name, args=[round_name])
+        print(scheduler.get_job(round_name))
+
+def handle_round(round_name):
+    print(f"Handling round {round_name}")
+    pills = pillDatabase.get_pills()
+    for pill in pills:
+        if pill['round'] == round_name:
+            if pill['taken'] == 0:
+                pillDatabase.set_pill_status(pill['id'], 1)
+                # PLACEHOLDER for actual pill dispensing
+                notifications.notification(f"{pill['name']} taken", title="Pill taken", priority="default", tags="pill")
+
+schedule_rounds()
 
 @app.route('/api/datetime', methods=['GET'])
 def get_datetimes():
@@ -204,6 +235,7 @@ def rounds():
             }
             return jsonify(response)
         else:
+            schedule_rounds()
             notifications.notification(f"{data['name']} added", title="New round added", priority="default", tags="clock4")
             response = {
                 "status": "success",
@@ -226,6 +258,7 @@ def rounds():
             }
             return jsonify(response)
         else:
+            schedule_rounds()
             notifications.notification(f"{data['name']} edited", title="Round edited", priority="default", tags="clock4")
             response = {
                 "status": "success",
@@ -246,6 +279,7 @@ def rounds():
             }
             return jsonify(response)
         else:
+            schedule_rounds()
             notifications.notification(f"{data['name']} deleted", title="Round deleted", priority="default", tags="clock4")
             response = {
                 "status": "success",
@@ -299,5 +333,5 @@ def print_qr():
     return jsonify(response)
 
 if __name__ == '__main__':
-    notifications.notification("Daily Display is starting up", title="Backend started", priority="high", tags="rocket")
+    notifications.notification("Daily Display is starting up", title="Backend started", priority="default", tags="rocket")
     app.run(debug=True)

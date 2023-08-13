@@ -6,3 +6,4 @@ requests
 pyserial
 qrcode
 pillow
+APScheduler
