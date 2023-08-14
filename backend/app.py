@@ -48,7 +48,7 @@ def handle_round(round_name):
     for pill in pills:
         if pill['round'] == round_name:
             if pill['taken'] == 0:
-                dispenser.dispense_pill(pill['dispenser'])
+                dispenser.dispense_pill(pill['dispenser'], pill['number'])
                 notifications.notification(f"{pill['name']} dispensed", title="Pill dispensed", priority="default", tags="pill")
 
 schedule_rounds()
