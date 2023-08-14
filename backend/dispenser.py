@@ -27,9 +27,14 @@ class Dispenser:
         pulse = map_range(angle, 0, 180, SERVO_MIN, SERVO_MAX)
         self.pwm.set_pwm(servo_channel, 0, pulse)
 
-    def dispense_pill(self, dispenser_index):
-        self.set_servo_angle(dispenser_index, 0)
-        time.sleep(1)
-        self.set_servo_angle(dispenser_index, 90)
-        time.sleep(1)
-        self.set_servo_angle(dispenser_index, 0)
+    def dispense_pill(self, dispenser_index, number_of_pills):
+        if not self.dispenser_enabled:
+            return
+
+        for i in range(number_of_pills):
+            self.set_servo_angle(dispenser_index, 0)
+            time.sleep(1)
+            self.set_servo_angle(dispenser_index, 90)
+            time.sleep(1)
+            self.set_servo_angle(dispenser_index, 0)
+            time.sleep(1)
