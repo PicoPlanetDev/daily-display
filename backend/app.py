@@ -335,4 +335,4 @@ def print_qr():
 
 if __name__ == '__main__':
     notifications.notification("Daily Display is starting up", title="Backend started", priority="default", tags="rocket")
-    app.run(debug=True)
+    app.run(debug=True, host='0.0.0.0')
