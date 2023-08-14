@@ -43,11 +43,12 @@
             <div id="emailHelp" class="form-text">The serial port that the printer is connected to, such as <span
                     class="font-monospace">/dev/ttyUSB0</span></div>
         </div>
-        <div class="mb-3 col-lg-6">
-            <label for="printerBaudrate" class="form-label">Printer Baudrate</label>
-            <input type="text" class="form-control" id="printerBaudrate" aria-describedby="printerBaudrate"
-                v-model="printerBaudrate" :disabled="printerEnabled ? false : true">
-            <div id="emailHelp" class="form-text">The speed of communication of the printer, such as 9600</div>
+        <!-- Printer -->
+        <div class="fs-4"><i class="bi bi-capsule"></i> Dispenser</div>
+        <hr>
+        <div class="form-check form-switch mb-3">
+            <input class="form-check-input" type="checkbox" role="switch" id="dispenserCheck" v-model="dispenserEnabled">
+            <label class="form-check-label" for="dispenserCheck">Dispenser enabled</label>
         </div>
         <!-- Exit and save buttons -->
         <hr>
@@ -84,6 +85,7 @@ export default {
             alertMessage: '',
             alertStyle: '',
             showAlert: false,
+            dispenserEnabled: true,
         };
     },
     methods: {
@@ -99,6 +101,7 @@ export default {
                     this.printerEnabled = response.data.settings.printer_enabled;
                     this.printerPort = response.data.settings.printer_port;
                     this.printerBaudrate = response.data.settings.printer_baudrate;
+                    this.dispenserEnabled = response.data.settings.dispenser_enabled;
 
                     this.scrollToTop();
                 })
@@ -115,6 +118,7 @@ export default {
                 printer_enabled: this.printerEnabled,
                 printer_port: this.printerPort,
                 printer_baudrate: this.printerBaudrate,
+                dispenser_enabled: this.dispenserEnabled,
             })
                 .then(response => {
                     console.log(response);
