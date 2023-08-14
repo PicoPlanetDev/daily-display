@@ -27,6 +27,9 @@ class Settings():
         self.config.set("Printer", "printer_enabled", "true")
         self.config.set("Printer", "printer_port", "/dev/ttyS5")
         self.config.set("Printer", "printer_baudrate", "9600")
+
+        self.config.add_section("Dispenser")
+        self.config.set("Dispenser", "dispenser_enabled", "true")
         
         with open(self.path, "w") as config_file:
             self.config.write(config_file)
@@ -41,7 +44,8 @@ class Settings():
             "calendar_url": self.config.get("Calendar", "calendar_url"),
             "printer_enabled": self.config.getboolean("Printer", "printer_enabled"),
             "printer_port": self.config.get("Printer", "printer_port"),
-            "printer_baudrate": self.config.getint("Printer", "printer_baudrate")
+            "printer_baudrate": self.config.getint("Printer", "printer_baudrate"),
+            "dispenser_enabled": self.config.getboolean("Dispenser", "dispenser_enabled")
         }
     
     def update_config(self, dictionary):
@@ -55,6 +59,7 @@ class Settings():
             self.config.set("Printer", "printer_enabled", "true" if dictionary["printer_enabled"] else "false")
             self.config.set("Printer", "printer_port", dictionary["printer_port"])
             self.config.set("Printer", "printer_baudrate", str(dictionary["printer_baudrate"]))
+            self.config.set("Dispenser", "dispenser_enabled", "true" if dictionary["dispenser_enabled"] else "false")
         except KeyError as e:
             print("KeyError: {}".format(e))
             return False
