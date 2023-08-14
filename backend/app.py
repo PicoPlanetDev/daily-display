@@ -11,6 +11,7 @@ import subprocess
 import qrcode
 import local_ip
 from apscheduler.schedulers.background import BackgroundScheduler
+from dispenser import Dispenser
 
 scheduler = BackgroundScheduler()
 scheduler.start()
@@ -24,6 +25,7 @@ settings = Settings() # config.ini is created if it doesn't exist
 notifications = Notifications()
 pillDatabase = PillDatabase()
 printer = Printer()
+dispenser = Dispenser(i2c_bus=3, i2c_address=0x40)
 
 def schedule_rounds():
     for round in pillDatabase.get_rounds():
@@ -46,9 +48,8 @@ def handle_round(round_name):
     for pill in pills:
         if pill['round'] == round_name:
             if pill['taken'] == 0:
-                pillDatabase.set_pill_status(pill['id'], 1)
-                # PLACEHOLDER for actual pill dispensing
-                notifications.notification(f"{pill['name']} taken", title="Pill taken", priority="default", tags="pill")
+                dispenser.dispense_pill(pill['dispenser'])
+                notifications.notification(f"{pill['name']} dispensed", title="Pill dispensed", priority="default", tags="pill")
 
 schedule_rounds()
 
