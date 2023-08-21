@@ -50,7 +50,7 @@ def handle_round(round_name):
     # Handle reciept printing
     reciept_rounds = settings.get_config_dict()['receipt_rounds']
     if round_name in reciept_rounds:
-        print_receipt()
+        print_calendar()
 
     # Handle pill dispense
     pills = pillDatabase.get_pills()
@@ -304,9 +304,7 @@ def rounds():
 
 @app.route('/api/print_receipt', methods=['GET'])
 def print_receipt():
-    date = calendar.get_date()
-    calendar_events = calendar.get_events_list()
-    printer.print_calendar(calendar_events, date)
+    print_calendar()
     response = {
         "status": "success",
     }
@@ -340,6 +338,11 @@ def print_qr():
         "status": "success",
     }
     return jsonify(response)
+
+def print_calendar():
+    date = calendar.get_date()
+    calendar_events = calendar.get_events_list()
+    printer.print_calendar(calendar_events, date)
 
 if __name__ == '__main__':
     notifications.notification("Daily Display is starting up", title="Backend started", priority="default", tags="rocket")
