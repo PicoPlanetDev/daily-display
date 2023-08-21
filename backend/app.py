@@ -44,6 +44,13 @@ def schedule_rounds():
 
 def handle_round(round_name):
     print(f"Handling round {round_name}")
+
+    # Handle reciept printing
+    reciept_rounds = settings.get_config_dict()['receipt_rounds']
+    if round_name in reciept_rounds:
+        print_receipt()
+
+    # Handle pill dispense
     pills = pillDatabase.get_pills()
     for pill in pills:
         if round_name in pill['round']:

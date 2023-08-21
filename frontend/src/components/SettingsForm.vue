@@ -38,12 +38,21 @@
         </div>
         <div class="mb-3 col-lg-6">
             <label for="printerPort" class="form-label">Printer Port</label>
-            <input type="text" class="form-control" id="printerPort" aria-describedby="printerPort" v-model="printerPort"
-                :disabled="printerEnabled ? false : true">
-            <div id="emailHelp" class="form-text">The serial port that the printer is connected to, such as <span
-                    class="font-monospace">/dev/ttyUSB0</span></div>
+            <input type="text" class="form-control" id="printerPort" aria-describedby="printerPortDescription"
+                v-model="printerPort" :disabled="printerEnabled ? false : true">
+            <div id="printerPortDescription" class="form-text">The serial port that the printer is connected to, such as
+                <span class="font-monospace">/dev/ttyUSB0</span></div>
         </div>
-        <!-- Printer -->
+        <div class="mb-3 col-lg-6">
+            <label for="receiptRounds" class="form-label">Printer Port</label>
+            <input type="text" class="form-control" id="receiptRounds" aria-describedby="receiptRoundsDescription"
+                v-model="receiptRounds" :disabled="printerEnabled ? false : true">
+            <div id="receiptRoundsDescription" class="form-text">The rounds (from below) that the reciept should be printed
+                during, such as
+                <span class="font-monospace">Morning,Lunch</span>
+            </div>
+        </div>
+        <!-- Dispenser -->
         <div class="fs-4"><i class="bi bi-capsule"></i> Dispenser</div>
         <hr>
         <div class="form-check form-switch mb-3">
@@ -86,6 +95,7 @@ export default {
             alertStyle: '',
             showAlert: false,
             dispenserEnabled: true,
+            receiptRounds: '',
         };
     },
     methods: {
@@ -102,6 +112,7 @@ export default {
                     this.printerPort = response.data.settings.printer_port;
                     this.printerBaudrate = response.data.settings.printer_baudrate;
                     this.dispenserEnabled = response.data.settings.dispenser_enabled;
+                    this.receiptRounds = response.data.settings.receipt_rounds;
 
                     this.scrollToTop();
                 })
@@ -119,6 +130,7 @@ export default {
                 printer_port: this.printerPort,
                 printer_baudrate: this.printerBaudrate,
                 dispenser_enabled: this.dispenserEnabled,
+                receipt_rounds: this.receiptRounds,
             })
                 .then(response => {
                     console.log(response);
