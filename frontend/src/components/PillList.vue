@@ -4,13 +4,16 @@
             <h3><i class="bi bi-prescription"></i> Pills</h3>
             <hr>
             <div>
-                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addPillModal">
+                <button type="button" class="btn btn-primary me-3" data-bs-toggle="modal" data-bs-target="#addPillModal">
                     <i class="bi bi-plus"></i> Add Pill
+                </button>
+                <button type="button" class="btn btn-primary" @click="getPills">
+                    <i class="bi bi-arrow-clockwise"></i> Refresh list
                 </button>
             </div>
             <div>
                 <div class="mt-3" v-if="pills.length == 0">
-                    No pills found. Click the button above to create one!
+                    No pills found. Click the button above to create one, or try refreshing the list.
                     <hr>
                 </div>
                 <table class="table table-hover" v-if="pills.length > 0">
@@ -190,12 +193,19 @@ export default {
     methods: {
         getPills() {
             const path = '/pills';
+            // Count the number of times we've tried to get the pills
+            // If we've tried too many times, stop trying
+            var fails = 0;
             axios.get(path)
                 .then(response => {
                     this.pills = response.data.pills;
                 })
                 .catch(error => {
                     console.log(error);
+                    fails++;
+                    if (fails < 5) {
+                        this.getPills();
+                    }
                 });
         },
         clearForm() {

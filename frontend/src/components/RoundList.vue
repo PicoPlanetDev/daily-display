@@ -4,13 +4,16 @@
             <h3><i class="bi bi-clock"></i> Rounds</h3>
             <hr>
             <div>
-                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addRoundModal">
+                <button type="button" class="btn btn-primary me-3" data-bs-toggle="modal" data-bs-target="#addRoundModal">
                     <i class="bi bi-plus"></i> Add Round
+                </button>
+                <button type="button" class="btn btn-primary" @click="getRounds">
+                    <i class="bi bi-arrow-clockwise"></i> Refresh list
                 </button>
             </div>
             <div>
                 <div class="mt-3" v-if="rounds.length == 0">
-                    No rounds found. Click the button above to create one!
+                    No rounds found. Click the button above to create one, or try refreshing the list.
                     <hr>
                 </div>
                 <table class="table table-hover" v-if="rounds.length > 0">
@@ -156,12 +159,20 @@ export default {
     methods: {
         getRounds() {
             const path = '/rounds';
+
+            // Count the number of times we've tried to get the rounds
+            // If we've tried too many times, stop trying
+            var fails = 0;
             axios.get(path)
                 .then(response => {
                     this.rounds = response.data.rounds;
                 })
                 .catch(error => {
                     console.log(error);
+                    fails++;
+                    if (fails < 5) {
+                        this.getRounds();
+                    }
                 });
         },
         clearForm() {
