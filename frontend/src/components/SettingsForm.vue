@@ -41,10 +41,11 @@
             <input type="text" class="form-control" id="printerPort" aria-describedby="printerPortDescription"
                 v-model="printerPort" :disabled="printerEnabled ? false : true">
             <div id="printerPortDescription" class="form-text">The serial port that the printer is connected to, such as
-                <span class="font-monospace">/dev/ttyUSB0</span></div>
+                <span class="font-monospace">/dev/ttyUSB0</span>
+            </div>
         </div>
         <div class="mb-3 col-lg-6">
-            <label for="receiptRounds" class="form-label">Printer Port</label>
+            <label for="receiptRounds" class="form-label">Reciept Rounds</label>
             <input type="text" class="form-control" id="receiptRounds" aria-describedby="receiptRoundsDescription"
                 v-model="receiptRounds" :disabled="printerEnabled ? false : true">
             <div id="receiptRoundsDescription" class="form-text">The rounds (from below) that the reciept should be printed
