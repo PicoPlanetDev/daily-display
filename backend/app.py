@@ -56,9 +56,8 @@ def handle_round(round_name):
     pills = pillDatabase.get_pills()
     for pill in pills:
         if round_name in pill['round']:
-            if pill['taken'] == 0:
-                dispenser.dispense_pill(pill['dispenser'], pill['number'])
-                notifications.notification(f"{pill['name']} dispensed", title="Pill dispensed", priority="default", tags="pill")
+            dispenser.dispense_pill(pill['dispenser'], pill['number'])
+            notifications.notification(f"{pill['name']} dispensed", title="Pill dispensed", priority="default", tags="pill")
 
 schedule_rounds()
 
