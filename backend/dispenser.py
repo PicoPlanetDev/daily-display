@@ -24,7 +24,7 @@ class Dispenser:
         if not self.dispenser_enabled:
             return
         
-        pulse = map_range(angle, 0, 180, SERVO_MIN, SERVO_MAX)
+        pulse = int(map_range(angle, 0, 180, SERVO_MIN, SERVO_MAX))
         self.pwm.set_pwm(servo_channel, 0, pulse)
 
     def dispense_pill(self, dispenser_index, number_of_pills):
