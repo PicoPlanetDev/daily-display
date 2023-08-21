@@ -12,8 +12,10 @@ import qrcode
 import local_ip
 from apscheduler.schedulers.background import BackgroundScheduler
 from dispenser import Dispenser
+from tzlocal import get_localzone
 
-scheduler = BackgroundScheduler()
+tz = get_localzone()
+scheduler = BackgroundScheduler(timezone=tz)
 scheduler.start()
 
 app = Flask(__name__)
