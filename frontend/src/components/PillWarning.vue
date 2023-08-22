@@ -19,13 +19,13 @@ export default {
             axios.get(path)
                 .then(response => {
                     if (response.data.warning == "wait") {
-                        this.warningBackground = "bg-secondary";
-                        this.warningMessage = "Wait for " + response.data.pill_round + " pills";
+                        this.warningBackground = "bg-secondary-subtle";
+                        this.warningMessage = "Wait for " + response.data.pill_round + " pills in " + response.data.time_until;
                     } else if (response.data.warning == "take") {
-                        this.warningBackground = "bg-danger";
+                        this.warningBackground = "bg-warning";
                         this.warningMessage = "Take " + response.data.pill_round + " pills";
                     } else if (response.data.warning == "none") {
-                        this.warningBackground = "bg-success";
+                        this.warningBackground = "bg-success-subtle";
                         this.warningMessage = "Pills taken!";
                     }
                 })

@@ -54,11 +54,20 @@
             </div>
         </div>
         <!-- Dispenser -->
-        <div class="fs-4"><i class="bi bi-capsule"></i> Dispenser</div>
+        <div class="fs-4"><i class="bi bi-capsule"></i> Pill dispensing</div>
         <hr>
         <div class="form-check form-switch mb-3">
             <input class="form-check-input" type="checkbox" role="switch" id="dispenserCheck" v-model="dispenserEnabled">
             <label class="form-check-label" for="dispenserCheck">Dispenser enabled</label>
+        </div>
+        <div class="mb-3 col-lg-6">
+            <label for="manualDispense" class="form-label">Manual dispense</label>
+            <input type="text" class="form-control" id="manualDispense" aria-describedby="manualDispenseDescription"
+                v-model="manualDispense" :disabled="printerEnabled ? false : true">
+            <div id="manualDispenseDescription" class="form-text">The number of minutes before the round time that the pill
+                can be manually dispensed, such as
+                <span class="font-monospace">60</span>
+            </div>
         </div>
         <!-- Exit and save buttons -->
         <hr>
@@ -97,6 +106,7 @@ export default {
             showAlert: false,
             dispenserEnabled: true,
             receiptRounds: '',
+            manualDispense: '',
         };
     },
     methods: {
@@ -114,6 +124,7 @@ export default {
                     this.printerBaudrate = response.data.settings.printer_baudrate;
                     this.dispenserEnabled = response.data.settings.dispenser_enabled;
                     this.receiptRounds = response.data.settings.receipt_rounds;
+                    this.manualDispense = response.data.settings.manual_dispense;
 
                     this.scrollToTop();
                 })
@@ -132,6 +143,7 @@ export default {
                 printer_baudrate: this.printerBaudrate,
                 dispenser_enabled: this.dispenserEnabled,
                 receipt_rounds: this.receiptRounds,
+                manual_dispense: this.manualDispense,
             })
                 .then(response => {
                     console.log(response);

@@ -27,14 +27,42 @@ class Dispenser:
         pulse = int(map_range(angle, 0, 180, SERVO_MIN, SERVO_MAX))
         self.pwm.set_pwm(servo_channel, 0, pulse)
 
-    def dispense_pill(self, dispenser_index, number_of_pills):
+    def dispense_pill(self, dispenser_index, number_of_pills=1):
+        """Dispenses a pill from the dispenser, optionally repeatedly
+
+        Args:
+            dispenser_index (int): The index of the dispenser to run
+            number_of_pills (int): The number of pills to dispense
+        """        
         if not self.dispenser_enabled:
             return
 
         for i in range(number_of_pills):
-            self.set_servo_angle(dispenser_index, 0)
-            time.sleep(1)
-            self.set_servo_angle(dispenser_index, 90)
-            time.sleep(1)
-            self.set_servo_angle(dispenser_index, 0)
-            time.sleep(1)
+            self.cycle_dispenser(dispenser_index)
+
+    def reset_dispenser(self, dispenser_index):
+        """Resets the dispenser to the 0 degree position (closed)
+
+        Args:
+            dispenser_index (int): The index of the dispenser to reset
+        """
+        if not self.dispenser_enabled:
+                return
+            
+        self.set_servo_angle(dispenser_index, 0)
+
+    def cycle_dispenser(self, dispenser_index):
+        """Cycles the dispenser to the 90 degree position (open) and back to the 0 degree position (closed)
+
+        Args:
+            dispenser_index (int): The index of the dispenser to cycle
+        """        
+        if not self.dispenser_enabled:
+            return
+
+        self.set_servo_angle(dispenser_index, 0)
+        time.sleep(1)
+        self.set_servo_angle(dispenser_index, 90)
+        time.sleep(1)
+        self.set_servo_angle(dispenser_index, 0)
+        time.sleep(1)        

@@ -13,6 +13,7 @@ import local_ip
 from apscheduler.schedulers.background import BackgroundScheduler
 from dispenser import Dispenser
 from tzlocal import get_localzone
+from datetime import datetime, timedelta
 
 tz = get_localzone()
 scheduler = BackgroundScheduler(timezone=tz)
@@ -37,11 +38,20 @@ def schedule_rounds():
         except:
             print("Job not found")
         
-        round_time = round['time'].split(":")
-        round_hour = int(round_time[0])
-        round_minute = int(round_time[1])
-        #print(f"Added job {name} at {round_hour}:{round_minute}")
+        round_time = datetime.strptime(round['time'], "%H:%M").astimezone()
+        round_hour = datetime.strftime(round_time, "%H")
+        round_minute = datetime.strftime(round_time, "%M")
+
         scheduler.add_job(handle_round, 'cron', hour=round_hour, minute=round_minute, id=round_name, args=[round_name])
+
+        # Unlock the dispenser early
+        manual_dispense_time = settings.get_config_dict()['manual_dispense']
+        unlock_time = round_time - timedelta(minutes=manual_dispense_time)
+        unlock_hour = datetime.strftime(unlock_time, "%H")
+        unlock_minute = datetime.strftime(unlock_time, "%M")
+
+        scheduler.add_job(unlock_dispenser, 'cron', hour=unlock_hour, minute=unlock_minute, id=f"{round_name}_unlock", args=[round_name])
+        
         print(scheduler.get_job(round_name))
 
 def handle_round(round_name):
@@ -58,6 +68,12 @@ def handle_round(round_name):
         if round_name in pill['round']:
             dispenser.dispense_pill(pill['dispenser'], pill['number'])
             notifications.notification(f"{pill['name']} dispensed", title="Pill dispensed", priority="default", tags="pill")
+
+    # Mark round as taken
+    pillDatabase.set_round_taken_by_name(round_name, 1)
+
+def unlock_dispenser(round_name):
+    pillDatabase.set_round_taken_by_name(round_name, 0)
 
 schedule_rounds()
 
@@ -88,12 +104,32 @@ def get_version():
 
 @app.route('/api/pill_warning', methods=['GET'])
 def pill_warning():
-    response = {
-        "status": "success",
-        "warning": "none",
-        "pill_round": "morning",
-    }
-    return jsonify(response)
+    # get the next round
+    next_round = pillDatabase.get_next_round()
+
+    if next_round is None:
+        response = {
+            "status": "error",
+            "message": "No rounds found"
+        }
+        return jsonify(response)
+    
+    else:
+        if next_round['overdue']:
+            response = {
+                "status": "success",
+                "warning": "take",
+                "pill_round": next_round['name'],
+                "time_until": next_round['time_until']
+            }
+            return jsonify(response)
+        response = {
+            "status": "success",
+            "warning": "wait",
+            "pill_round": next_round['name'],
+            "time_until": next_round['time_until']
+        }
+        return jsonify(response)
 
 @app.route('/api/settings', methods=['GET', 'POST'])
 def get_settings():

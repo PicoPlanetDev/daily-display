@@ -31,6 +31,7 @@ class Settings():
 
         self.config.add_section("Dispenser")
         self.config.set("Dispenser", "dispenser_enabled", "true")
+        self.config.set("Dispenser", "manual_dispense_time", "60")
         
         with open(self.path, "w") as config_file:
             self.config.write(config_file)
@@ -47,7 +48,8 @@ class Settings():
             "printer_port": self.config.get("Printer", "printer_port"),
             "printer_baudrate": self.config.getint("Printer", "printer_baudrate"),
             "dispenser_enabled": self.config.getboolean("Dispenser", "dispenser_enabled"),
-            "receipt_rounds": self.config.get("Printer", "receipt_rounds")
+            "receipt_rounds": self.config.get("Printer", "receipt_rounds"),
+            "manual_dispense": self.config.getint("Dispenser", "manual_dispense_time")
         }
     
     def update_config(self, dictionary):
@@ -63,6 +65,7 @@ class Settings():
             self.config.set("Printer", "printer_baudrate", str(dictionary["printer_baudrate"]))
             self.config.set("Dispenser", "dispenser_enabled", "true" if dictionary["dispenser_enabled"] else "false")
             self.config.set("Printer", "receipt_rounds", dictionary["receipt_rounds"])
+            self.config.set("Dispenser", "manual_dispense_time", str(dictionary["manual_dispense"]))
         except KeyError as e:
             print("KeyError: {}".format(e))
             return False

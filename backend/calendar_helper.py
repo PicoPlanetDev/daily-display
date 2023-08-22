@@ -9,6 +9,18 @@ def pluralize(string, count):
     else:
         return string + "s"
 
+def format_time_until(time_until):
+    time_until_formatted = ""
+    if time_until.days > 0:
+        time_until_formatted = str(time_until.days) + pluralize(" day", time_until.days)
+    elif time_until.seconds >= 3600:
+        time_until_formatted = str(time_until.seconds // 3600) + pluralize(" hour", time_until.seconds // 3600)
+    elif time_until.seconds >= 60:
+        time_until_formatted = str(time_until.seconds // 60) + pluralize(" minute", time_until.seconds // 60)
+    elif time_until.seconds < 60:
+        time_until_formatted = "less than a minute"
+    return time_until_formatted
+
 class Calendar():
     def __init__(self):
         self.settings = Settings()
@@ -72,15 +84,7 @@ class Calendar():
 
             # time until event
             event_time_until = event_start - datetime.now().astimezone()#+timedelta(hours=-12)
-            event_time_until_formatted = ""
-            if event_time_until.days > 0:
-                event_time_until_formatted = str(event_time_until.days) + pluralize(" day", event_time_until.days)
-            elif event_time_until.seconds >= 3600:
-                event_time_until_formatted = str(event_time_until.seconds // 3600) + pluralize(" hour", event_time_until.seconds // 3600)
-            elif event_time_until.seconds >= 60:
-                event_time_until_formatted = str(event_time_until.seconds // 60) + pluralize(" minute", event_time_until.seconds // 60)
-            elif event_time_until.seconds < 60:
-                event_time_until_formatted = "less than a minute"
+            event_time_until_formatted = format_time_until(event_time_until)
 
             event_time_until_formatted = "in " + event_time_until_formatted
 
