@@ -32,8 +32,8 @@ class PillDatabase():
                 "id": pill[0],
                 "name": pill[1],
                 "round": pill[2],
-                "number": pill[4],
-                "dispenser": pill[5]
+                "number": pill[3],
+                "dispenser": pill[4]
             })
         return pills
     
