@@ -62,7 +62,7 @@ class PillDatabase():
         self.cur.execute("SELECT * FROM rounds WHERE time < ? AND taken = 0 ORDER BY time DESC LIMIT 1", (now.strftime("%H:%M"),))
         result = self.cur.fetchone()
         if result is not None:
-            time_until = datetime.datetime.strptime(result[2], "%H:%M") - now
+            time_until = datetime.datetime.strptime(result[2], "%H:%M").astimezone() - now
             time_until_formatted = calendar_helper.format_time_until(time_until)
 
             return {
@@ -80,7 +80,7 @@ class PillDatabase():
         if result is None:
             return None
 
-        time_until = datetime.datetime.strptime(result[2], "%H:%M") - now
+        time_until = datetime.datetime.strptime(result[2], "%H:%M").astimezone() - now
         time_until_formatted = calendar_helper.format_time_until(time_until)
 
         return {
