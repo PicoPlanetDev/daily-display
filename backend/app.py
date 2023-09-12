@@ -380,11 +380,19 @@ def mark_round_taken():
     # Trying to figure out a way to mark the current round taken
     # whether that's the next manual round, or the current overdue round
     data = request.get_json()
-    pillDatabase.set_round_taken_by_name(data['name'], 1)
-    response = {
-        "status": "success",
-    }
-    return jsonify(response)
+    next_round = pillDatabase.get_next_round()
+    if next_round is not None:
+        pillDatabase.set_round_taken_by_name(next_round['name'], 1)
+        response = {
+            "status": "success",
+        }
+        return jsonify(response)
+    else:
+        response = {
+            "status": "error",
+            "message": "No rounds found"
+        }
+        return jsonify(response)
 
 def print_calendar():
     date = calendar.get_date()
