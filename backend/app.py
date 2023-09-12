@@ -375,6 +375,17 @@ def print_qr():
     }
     return jsonify(response)
 
+@app.route('/api/mark_round_taken', methods=['GET'])
+def mark_round_taken():
+    # Trying to figure out a way to mark the current round taken
+    # whether that's the next manual round, or the current overdue round
+    data = request.get_json()
+    pillDatabase.set_round_taken_by_name(data['name'], 1)
+    response = {
+        "status": "success",
+    }
+    return jsonify(response)
+
 def print_calendar():
     date = calendar.get_date()
     calendar_events = calendar.get_events_list()
