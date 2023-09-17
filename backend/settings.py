@@ -22,6 +22,7 @@ class Settings():
 
         self.config.add_section("Calendar")
         self.config.set("Calendar", "calendar_url", "https://linktoicsfile.ics")
+        self.config.set("Calendar", "timezone", "America/New_York")
 
         self.config.add_section("Printer")
         self.config.set("Printer", "printer_enabled", "true")
@@ -44,6 +45,7 @@ class Settings():
             "notification_url": self.config.get("Notifications", "notification_url"),
             "notifications_enabled": self.config.getboolean("Notifications", "notifications_enabled"),
             "calendar_url": self.config.get("Calendar", "calendar_url"),
+            "timezone": self.config.get("Calendar", "timezone"),
             "printer_enabled": self.config.getboolean("Printer", "printer_enabled"),
             "printer_port": self.config.get("Printer", "printer_port"),
             "printer_baudrate": self.config.getint("Printer", "printer_baudrate"),
@@ -60,6 +62,7 @@ class Settings():
             self.config.set("Notifications", "notification_url", dictionary["notification_url"])
             self.config.set("Notifications", "notifications_enabled", "true" if dictionary["notifications_enabled"] else "false")
             self.config.set("Calendar", "calendar_url", dictionary["calendar_url"])
+            self.config.set("Calendar", "timezone", dictionary["timezone"])
             self.config.set("Printer", "printer_enabled", "true" if dictionary["printer_enabled"] else "false")
             self.config.set("Printer", "printer_port", dictionary["printer_port"])
             self.config.set("Printer", "printer_baudrate", str(dictionary["printer_baudrate"]))

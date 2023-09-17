@@ -6,9 +6,17 @@
         <hr>
         <div class="mb-3 col-lg-6">
             <label for="calendarUrl" class="form-label">Calendar URL</label>
-            <input type="url" class="form-control" id="calendarUrl" aria-describedby="calendarUrl" v-model="calendarUrl">
-            <div id="emailHelp" class="form-text">The url should end in an <span class="font-monospace">.ics</span> file,
+            <input type="url" class="form-control" id="calendarUrl" aria-describedby="calendarUrlHelp"
+                v-model="calendarUrl">
+            <div id="calendarUrlHelp" class="form-text">The url should end in an <span class="font-monospace">.ics</span>
+                file,
                 such as <span class="font-monospace">basic.ics</span></div>
+        </div>
+        <div class="mb-3 col-lg-6">
+            <label for="timezone" class="form-label">Timezone</label>
+            <input type="text" class="form-control" id="timezone" aria-describedby="timezoneHelp" v-model="timezone">
+            <div id="timezoneHelp" class="form-text">A timezone string, such as <span
+                    class="font-monospace">America/New_York</span></div>
         </div>
         <!-- Notifications -->
         <div class="fs-4"><i class="bi bi-bell"></i> Notifications</div>
@@ -22,8 +30,9 @@
             <label for="notificationUrl" class="form-label">Notification Webhook</label>
             <input type="url" class="form-control" id="notificationUrl" aria-describedby="notificationUrl"
                 v-model="notificationUrl" :disabled="notificationSwitch ? false : true">
-            <div id="emailHelp" class="form-text">Daily Display will make a POST request to this URL (designed for <a
-                    target="_blank" href="https://ntfy.sh">ntfy.sh</a>)</div>
+            <div id="notificationUrlHelp" class="form-text">Daily Display will make a POST request to this URL (designed for
+                <a target="_blank" href="https://ntfy.sh">ntfy.sh</a>)
+            </div>
         </div>
         <div class="mb-3">
             <button type="button" class="btn btn-outline-secondary" @click="testNotification()"
@@ -63,7 +72,7 @@
         <div class="mb-3 col-lg-6">
             <label for="manualDispense" class="form-label">Manual dispense</label>
             <input type="text" class="form-control" id="manualDispense" aria-describedby="manualDispenseDescription"
-                v-model="manualDispense" :disabled="printerEnabled ? false : true">
+                v-model="manualDispense">
             <div id="manualDispenseDescription" class="form-text">The number of minutes before the round time that the pill
                 can be manually dispensed, such as
                 <span class="font-monospace">60</span>
@@ -107,6 +116,7 @@ export default {
             dispenserEnabled: true,
             receiptRounds: '',
             manualDispense: '',
+            timezone: '',
         };
     },
     methods: {
@@ -125,6 +135,7 @@ export default {
                     this.dispenserEnabled = response.data.settings.dispenser_enabled;
                     this.receiptRounds = response.data.settings.receipt_rounds;
                     this.manualDispense = response.data.settings.manual_dispense;
+                    this.timezone = response.data.settings.timezone;
 
                     this.scrollToTop();
                 })
@@ -144,6 +155,7 @@ export default {
                 dispenser_enabled: this.dispenserEnabled,
                 receipt_rounds: this.receiptRounds,
                 manual_dispense: this.manualDispense,
+                timezone: this.timezone,
             })
                 .then(response => {
                     console.log(response);
