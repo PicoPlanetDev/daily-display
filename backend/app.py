@@ -37,8 +37,10 @@ def schedule_rounds():
         round_name = round['name']
         try:
             scheduler.remove_job(round_name)
+            scheduler.remove_job(f"{round_name}_unlock")
         except:
-            print("Job not found")
+            #print("Job not found")
+            pass
         
         round_time = datetime.strptime(round['time'], "%H:%M").astimezone()
         round_hour = datetime.strftime(round_time, "%H")
@@ -54,7 +56,7 @@ def schedule_rounds():
 
         scheduler.add_job(unlock_dispenser, 'cron', hour=unlock_hour, minute=unlock_minute, id=f"{round_name}_unlock", args=[round_name])
         
-        print(scheduler.get_job(round_name))
+        #print(scheduler.get_job(round_name))
 
 def handle_round(round_name):
     print(f"Handling round {round_name}")
@@ -92,7 +94,7 @@ def get_datetimes():
 def get_events():
     response = {
         "status": "success",
-        "events": calendar.get_events_dict()
+        "events": calendar.get_events_dict(calendar.get_today(), calendar.get_today() + timedelta(days=1))
     }
     return jsonify(response)
 
@@ -116,22 +118,38 @@ def pill_warning():
         }
         return jsonify(response)
     
-    else:
-        if next_round['overdue']:
-            response = {
-                "status": "success",
-                "warning": "take",
-                "pill_round": next_round['name'],
-                "time_until": next_round['time_until']
-            }
-            return jsonify(response)
+    if next_round['soon'] == True and next_round['taken'] == 0:
+        response = {
+        "status": "success",
+        "warning": "wait",
+        "pill_round": next_round['name'],
+        "time_until": next_round['time_until']
+        }
+        return jsonify(response)
+        
+    if next_round['overdue'] == True and next_round['taken'] == 0:
         response = {
             "status": "success",
-            "warning": "wait",
+            "warning": "take",
             "pill_round": next_round['name'],
             "time_until": next_round['time_until']
         }
         return jsonify(response)
+        
+    if next_round['soon'] == False and next_round['overdue'] == False and next_round['taken'] == 0:
+        response = {
+            "status": "success",
+            "warning": "none",
+            "pill_round": next_round['name'],
+            "time_until": next_round['time_until']
+        }
+        return jsonify(response)
+    
+    response = {
+            "status": "error",
+            "message": "No rounds found"
+        }
+    return jsonify(response)
 
 @app.route('/api/settings', methods=['GET', 'POST'])
 def get_settings():
@@ -144,6 +162,9 @@ def get_settings():
     elif request.method == 'POST':
         data = request.get_json()
         if settings.update_config(data):
+            # rerun schedule_rounds to update the schedule
+            schedule_rounds()
+
             response = {
                 "status": "success",
             }
@@ -380,8 +401,7 @@ def print_qr():
 @app.route('/api/mark_round_taken', methods=['GET'])
 def mark_round_taken():
     # Trying to figure out a way to mark the current round taken
-    # whether that's the next manual round, or the current overdue round
-    data = request.get_json()
+    # whether that's the next manual round, or the current overdue round 
     next_round = pillDatabase.get_next_round()
     if next_round is not None:
         pillDatabase.set_round_taken_by_name(next_round['name'], 1)
@@ -398,7 +418,7 @@ def mark_round_taken():
 
 def print_calendar():
     date = calendar.get_date()
-    calendar_events = calendar.get_events_list()
+    calendar_events = calendar.get_events_list(calendar.get_today(), calendar.get_today() + timedelta(days=1))
     printer.print_calendar(calendar_events, date)
 
 if __name__ == '__main__':

@@ -18,6 +18,11 @@ export default {
             const path = '/pill_warning';
             axios.get(path)
                 .then(response => {
+                    if (response.data.status == "error") {
+                        this.warningBackground = "bg-danger";
+                        this.warningMessage = "Error: " + response.data.message;
+                        return;
+                    }
                     if (response.data.warning == "wait") {
                         this.warningBackground = "bg-secondary-subtle";
                         this.warningMessage = "Wait for " + response.data.pill_round + " pills in " + response.data.time_until;

@@ -1,13 +1,16 @@
 from notifications import Notifications
 import sqlite3
-import datetime
+from datetime import datetime
 import calendar_helper
+import settings
 
 class PillDatabase():
     def __init__(self):
         self.conn = sqlite3.connect('pills.db', check_same_thread=False)
         self.cur = self.get_cursor()
         self.ensure_database()
+        self.calendar = calendar_helper.Calendar()
+        self.config = settings.Settings()
     
     def get_cursor(self):
         return self.conn.cursor()
@@ -57,12 +60,16 @@ class PillDatabase():
         }
     
     def get_next_round(self):
-        now = datetime.datetime.now().astimezone()
+        now = datetime.now(tz=self.calendar.timezone)
         # if the previous round has not been taken, return it
         self.cur.execute("SELECT * FROM rounds WHERE time < ? AND taken = 0 ORDER BY time DESC LIMIT 1", (now.strftime("%H:%M"),))
-        result = self.cur.fetchone()
+        result = self.cur.fetchone() # will return in order of id, name, time, taken
         if result is not None:
-            time_until = datetime.datetime.strptime(result[2], "%H:%M").astimezone() - now
+            hours, minutes = str(result[2]).split(":")
+            hours = int(hours)
+            minutes = int(minutes)
+            
+            time_until = now.replace(hour=hours, minute=minutes, second=0, microsecond=0) - now
             time_until_formatted = calendar_helper.format_time_until(time_until)
 
             return {
@@ -72,6 +79,7 @@ class PillDatabase():
                 "time_until": time_until_formatted,
                 "taken": result[3],
                 "overdue": True,
+                "soon": True,
             }
 
         # otherwise move on to the next round
@@ -80,17 +88,34 @@ class PillDatabase():
         if result is None:
             return None
 
-        time_until = datetime.datetime.strptime(result[2], "%H:%M").astimezone() - now
-        time_until_formatted = calendar_helper.format_time_until(time_until)
+        hours, minutes = str(result[2]).split(":")
+        hours = int(hours)
+        minutes = int(minutes)
 
-        return {
-            "id": result[0],
-            "name": result[1],
-            "time": result[2],
-            "time_until": time_until_formatted,
-            "taken": result[3],
-            "overdue": False,
-        }
+        time_until = now.replace(hour=hours, minute=minutes, second=0, microsecond=0) - now
+        # check if the round is within the unlock time
+        if time_until.total_seconds() < self.config.get_config_dict()["manual_dispense"] * 60: # convert minutes to seconds
+            time_until_formatted = calendar_helper.format_time_until(time_until)
+
+            return {
+                "id": result[0],
+                "name": result[1],
+                "time": result[2],
+                "time_until": time_until_formatted,
+                "taken": result[3],
+                "overdue": False,
+                "soon": True,
+            }
+        else:
+            return {
+                "id": None,
+                "name": result[1],
+                "time": result[2],
+                "time_until": None,
+                "taken": result[3],
+                "overdue": False,
+                "soon": False,
+            }
 
 
     def add_pill(self, name, round, number, dispenser):

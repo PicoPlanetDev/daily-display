@@ -2,6 +2,7 @@ from icalevents import icalevents
 from datetime import datetime, timedelta
 import re
 from settings import Settings
+import pytz
 
 def pluralize(string, count):
     if count == 1:
@@ -10,6 +11,7 @@ def pluralize(string, count):
         return string + "s"
 
 def format_time_until(time_until):
+    print(f"time_until: {time_until}")
     time_until_formatted = ""
     if time_until.days > 0:
         time_until_formatted = str(time_until.days) + pluralize(" day", time_until.days)
@@ -25,17 +27,39 @@ class Calendar():
     def __init__(self):
         self.settings = Settings()
         self.url = self.get_url()
+        self.timezone = pytz.timezone(self.settings.get_config_dict()["timezone"])
+
+    def get_today(self):
+        # return a datetime object of today at midnight
+        return self.timezone.localize(datetime.utcnow().replace(hour=0, minute=0, second=0, microsecond=0))
 
     def get_url(self):
         return self.settings.config.get("Calendar", "calendar_url")
 
+    # These are the same function but with different defaults (stupid)
     def get_date(self, format="%A, %b %-d"):
-        return datetime.today().strftime(format)
+        """Return the datetime in the specified format
+
+        Args:
+            format (str, optional): strftime format. Defaults to "%A, %b %-d".
+
+        Returns:
+            str: Datetime formattted as a string
+        """        
+        return datetime.now(tz=self.timezone).strftime(format)
     
     def get_time(self, format="%-I:%M %p"):
-        return datetime.today().strftime(format)
+        """Return the datetime in the specified format
+
+        Args:
+            format (str, optional): strftime format. Defaults to "%-I:%M %p".
+
+        Returns:
+            str: Datetime formattted as a string
+        """   
+        return datetime.now(tz=self.timezone).strftime(format)
     
-    def get_events_dict(self, start_date=datetime.today()-timedelta(days=0), end_date=datetime.today()+timedelta(days=1)):
+    def get_events_dict(self, start_date: datetime, end_date: datetime):
         events_list = self.get_events_list(start_date, end_date)
 
         # convert to dict with keys as uid
@@ -45,7 +69,7 @@ class Calendar():
         
         return events_dict
     
-    def get_events_list(self, start_date=datetime.today()-timedelta(days=0), end_date=datetime.today()+timedelta(days=1)):
+    def get_events_list(self, start_date: datetime, end_date: datetime):
         # update the url
         self.url = self.get_url()
 
@@ -70,10 +94,10 @@ class Calendar():
                 compiled = re.compile(re.escape(event_type), re.IGNORECASE)
                 event_title = compiled.sub("", str(event.summary)).strip() # no type label, no leading/trailing white
 
-            event_start = datetime.strptime(str(event.start), "%Y-%m-%d %H:%M:%S%z") # get a datetime object of the event starting time
+            event_start = datetime.strptime(str(event.start), "%Y-%m-%d %H:%M:%S%z").replace(tzinfo=pytz.UTC) # get a datetime object of the event starting time
             
             # make sure the timezones are correct
-            event_start = event_start.astimezone(tz=None) # convert to local timezone
+            event_start = event_start.astimezone(tz=self.timezone) # convert to local timezone
 
             event_start_full = datetime.strftime(event_start, "%c") # make it readable
             event_start_time = datetime.strftime(event_start, "%-I:%M %p") # make it readable
@@ -83,7 +107,7 @@ class Calendar():
             event_timestamp = event_start.timestamp()
 
             # time until event
-            event_time_until = event_start - datetime.now().astimezone()#+timedelta(hours=-12)
+            event_time_until = event_start - datetime.now().astimezone(tz=self.timezone)#+timedelta(hours=-12)
             event_time_until_formatted = format_time_until(event_time_until)
 
             event_time_until_formatted = "in " + event_time_until_formatted

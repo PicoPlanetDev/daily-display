@@ -14,9 +14,19 @@
         </div>
         <div class="mb-3 col-lg-6">
             <label for="timezone" class="form-label">Timezone</label>
-            <input type="text" class="form-control" id="timezone" aria-describedby="timezoneHelp" v-model="timezone">
-            <div id="timezoneHelp" class="form-text">A timezone string, such as <span
-                    class="font-monospace">America/New_York</span></div>
+            <div class="row">
+                <div class="col">
+                    <input type="text" class="form-control" id="timezone" aria-describedby="timezoneHelp"
+                        v-model="timezone">
+                    <div id="timezoneHelp" class="form-text">A timezone string, such as <span
+                            class="font-monospace">America/New_York</span></div>
+                </div>
+                <div class="col">
+                    <button type="button" class="btn btn-primary" @click="this.timezone = this.getTimeZone()"
+                        :hidden="detectTimezoneDisabled"><i class="bi bi-stars"></i> Detect
+                        timezone</button>
+                </div>
+            </div>
         </div>
         <!-- Notifications -->
         <div class="fs-4"><i class="bi bi-bell"></i> Notifications</div>
@@ -202,6 +212,14 @@ export default {
         scrollToTop() {
             document.body.scrollTop = 0;
             document.documentElement.scrollTop = 0;
+        },
+        getTimeZone() {
+            return Intl.DateTimeFormat().resolvedOptions().timeZone;
+        },
+    },
+    computed: {
+        detectTimezoneDisabled() {
+            return this.timezone === this.getTimeZone();
         }
     },
     created() {
