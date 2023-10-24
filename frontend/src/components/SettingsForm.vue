@@ -88,6 +88,36 @@
                 <span class="font-monospace">60</span>
             </div>
         </div>
+        <!-- Control dispensers -->
+        <div class="mb-3">
+            <button type="button" class="btn btn-outline-secondary" data-bs-toggle="modal"
+                data-bs-target="#controlDispensersModal">
+                <i class="bi bi-sliders"></i> Control dispensers
+            </button>
+            <div class="modal fade" id="controlDispensersModal" tabindex="-1" aria-labelledby="controlDispensersModalLabel"
+                aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h1 class="modal-title fs-5" id="controlDispensersModalLabel">
+                                <i class="bi bi-sliders"></i> Control Dispensers
+                            </h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="mb-3">
+                                <label for="controlDispensersIndexInput" class="form-label">Dispenser index</label>
+                                <input type="number" class="form-control" id="controlDispensersIndexInput" placeholder="0"
+                                    v-model="controlDispensers.index">
+                            </div>
+                            <button type="button" class="btn btn-primary" @click="cycleDispenser">
+                                <i class="bi bi-arrow-clockwise"></i> Cycle dispenser
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
         <!-- Exit and save buttons -->
         <hr>
         <div class="mb-3">
@@ -127,6 +157,9 @@ export default {
             receiptRounds: '',
             manualDispense: '',
             timezone: '',
+            controlDispensers: {
+                index: 0,
+            }
         };
     },
     methods: {
@@ -216,6 +249,28 @@ export default {
         getTimeZone() {
             return Intl.DateTimeFormat().resolvedOptions().timeZone;
         },
+        cycleDispenser() {
+            const path = '/cycle_dispenser';
+            axios.post(path, {
+                index: this.controlDispensers.index,
+            })
+                .then(response => {
+                    console.log(response);
+                    if (response.data.status == "success") {
+                        this.alertMessage = "Dispenser cycled successfully";
+                        this.alertStyle = "alert-success";
+                        this.showAlert = true;
+                    }
+                    else {
+                        this.alertMessage = "Error cycling dispenser";
+                        this.alertStyle = "alert-danger";
+                        this.showAlert = true;
+                    }
+                })
+                .catch(error => {
+                    console.log(error);
+                });
+        }
     },
     computed: {
         detectTimezoneDisabled() {

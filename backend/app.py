@@ -416,6 +416,20 @@ def mark_round_taken():
         }
         return jsonify(response)
 
+@app.route('/api/cycle_dispenser', methods=['POST'])
+def cycle_dispenser():
+    data = request.get_json()
+    try:
+        dispenser.cycle_dispenser(data['index'])
+        response = {
+            "status": "success",
+        }
+    except:
+        response = {
+            "status": "error",
+        }
+    return jsonify(response)
+
 def print_calendar():
     date = calendar.get_date()
     calendar_events = calendar.get_events_list(calendar.get_today(), calendar.get_today() + timedelta(days=1))
