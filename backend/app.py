@@ -430,6 +430,14 @@ def cycle_dispenser():
         }
     return jsonify(response)
 
+@app.route('/api/shutdown', methods=['GET'])
+def shutdown():
+    os.system("shutdown -h now")
+    response = {
+        "status": "success",
+    }
+    return jsonify(response)
+
 def print_calendar():
     date = calendar.get_date()
     calendar_events = calendar.get_events_list(calendar.get_today(), calendar.get_today() + timedelta(days=1))
