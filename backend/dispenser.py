@@ -6,6 +6,9 @@ import settings
 SERVO_MIN = 100
 SERVO_MAX = 500
 
+SERVO_DEFAULT = 90
+SERVO_CHUTE = 0
+
 def map_range(value, inMin, inMax, outMin, outMax):
         return outMin + (((value - inMin) / (inMax - inMin)) * (outMax - outMin))
 
@@ -49,7 +52,7 @@ class Dispenser:
         if not self.dispenser_enabled:
                 return
             
-        self.set_servo_angle(dispenser_index, 0)
+        self.set_servo_angle(dispenser_index, SERVO_DEFAULT)
 
     def cycle_dispenser(self, dispenser_index):
         """Cycles the dispenser to the 90 degree position (open) and back to the 0 degree position (closed)
@@ -60,9 +63,9 @@ class Dispenser:
         if not self.dispenser_enabled:
             return
 
-        self.set_servo_angle(dispenser_index, 0)
+        self.set_servo_angle(dispenser_index, SERVO_DEFAULT)
         time.sleep(1)
-        self.set_servo_angle(dispenser_index, 90)
+        self.set_servo_angle(dispenser_index, SERVO_CHUTE)
         time.sleep(1)
-        self.set_servo_angle(dispenser_index, 0)
+        self.set_servo_angle(dispenser_index, SERVO_DEFAULT)
         time.sleep(1)        
