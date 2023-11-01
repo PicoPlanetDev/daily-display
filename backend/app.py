@@ -61,11 +61,6 @@ def schedule_rounds():
 def handle_round(round_name):
     print(f"Handling round {round_name}")
 
-    # Handle reciept printing
-    reciept_rounds = settings.get_config_dict()['receipt_rounds']
-    if round_name in reciept_rounds:
-        print_calendar()
-
     # Handle pill dispense
     pills = pillDatabase.get_pills()
     for pill in pills:
@@ -75,6 +70,11 @@ def handle_round(round_name):
 
     # Mark round as taken
     pillDatabase.set_round_taken_by_name(round_name, 1)
+
+    # Handle reciept printing
+    reciept_rounds = settings.get_config_dict()['receipt_rounds']
+    if round_name in reciept_rounds:
+        print_calendar()
 
 def unlock_dispenser(round_name):
     pillDatabase.set_round_taken_by_name(round_name, 0)
