@@ -10,7 +10,19 @@ SERVO_DEFAULT = 90
 SERVO_CHUTE = 0
 
 def map_range(value, inMin, inMax, outMin, outMax):
-        return outMin + (((value - inMin) / (inMax - inMin)) * (outMax - outMin))
+    """Maps a value from one range to another using linear interpolation without clamping
+
+    Args:
+        value: The value to map
+        inMin: The minimum value of the input range
+        inMax: The maximum value of the input range
+        outMin: The minimum value of the output range
+        outMax: The maximum value of the output range
+
+    Returns:
+        _type_: _description_
+    """        
+    return outMin + (((value - inMin) / (inMax - inMin)) * (outMax - outMin))
 
 class Dispenser:
     def __init__(self, i2c_bus, i2c_address):
@@ -21,9 +33,15 @@ class Dispenser:
             return
         
         self.pwm = PCA9685.PCA9685(i2c_bus, i2c_address)
-        self.pwm.set_pwm_freq(50)
+        self.pwm.set_pwm_freq(50) # 50 Hz drives SG90 servo motors well
 
-    def set_servo_angle(self, servo_channel, angle):
+    def set_servo_angle(self, servo_channel: int, angle):
+        """Sets the angle of a servo motor connected to the PCA9685
+
+        Args:
+            servo_channel (int): The channel, from 0 to 15, of the servo motor on the PCA9685
+            angle: The angle to set the servo motor to, from 0 to 180
+        """
         if not self.dispenser_enabled:
             return
         
@@ -50,7 +68,7 @@ class Dispenser:
             dispenser_index (int): The index of the dispenser to reset
         """
         if not self.dispenser_enabled:
-                return
+            return
             
         self.set_servo_angle(dispenser_index, SERVO_DEFAULT)
 
