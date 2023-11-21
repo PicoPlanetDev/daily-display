@@ -1,0 +1,11 @@
+[Unit]
+Description=Daily Display Backend Dev Server
+After=network.target
+
+[Service]
+WorkingDirectory=/home/orangepi/Programming/daily-display/backend
+ExecStart=/usr/bin/screen -dmS daily-display-backend /home/orangepi/Programming/daily-display/backend/venv/bin/python3 app.py
+Type=forking
+
+[Install]
+WantedBy=multi-user.target
