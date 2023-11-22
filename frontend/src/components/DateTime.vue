@@ -31,6 +31,14 @@ export default {
     },
     created() {
         this.getDateTime();
+    },
+    mounted() {
+        this.interval = setInterval(() => {
+            this.getDateTime();
+        }, 10000);
+    },
+    beforeUnmount() {
+        clearInterval(this.interval);
     }
 }
 </script>

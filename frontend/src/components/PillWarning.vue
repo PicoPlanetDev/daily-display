@@ -39,8 +39,14 @@ export default {
                 });
         }
     },
-    created() {
+    mounted() {
         this.getWarningData();
+        this.interval = setInterval(() => {
+            this.getWarningData();
+        }, 30000);
+    },
+    beforeUnmount() {
+        clearInterval(this.interval);
     }
 }
 </script>

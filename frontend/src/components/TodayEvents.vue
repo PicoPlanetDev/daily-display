@@ -35,22 +35,17 @@ export default {
             const path = '/events';
             axios.get(path)
                 .then(response => {
-                    //this.events = response.data.events;
                     // events is a json with uid keys
                     // convert to array
                     let eventsArray = [];
                     for (const [key, value] of Object.entries(response.data.events)) {
                         eventsArray.push(value);
                     }
-                    // sort by datetime
-                    // eventsArray.sort((a, b) => {
-                    //     return a.datetime.localeCompare(b.datetime);
-                    // });
+
                     // sort by timestamp
                     eventsArray.sort((a, b) => {
                         return a.timestamp - b.timestamp;
                     });
-                    console.log(eventsArray);
                     this.events = eventsArray;
                 })
                 .catch(error => {
@@ -67,6 +62,14 @@ export default {
     },
     created() {
         this.getEvents();
+    },
+    mounted() {
+        this.interval = setInterval(() => {
+            this.getEvents();
+        }, 30000);
+    },
+    beforeUnmount() {
+        clearInterval(this.interval);
     }
 }
 </script>
