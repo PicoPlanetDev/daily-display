@@ -141,20 +141,20 @@
                     <!-- Servo timings -->
                     <div class="input-group mb-3">
                         <span class="input-group-text">Servo min</span>
-                        <input type="text" class="form-control" placeholder="100" aria-label="Servo min"
-                            v-model="editDispenserForm.servo_min">
+                        <input type="number" class="form-control" placeholder="100" aria-label="Servo min"
+                            v-model="editDispenserForm.servo_min" step="1">
                         <span class="input-group-text">Servo max</span>
-                        <input type="text" class="form-control" placeholder="500" aria-label="Servo max"
-                            v-model="editDispenserForm.servo_max">
+                        <input type="number" class="form-control" placeholder="500" aria-label="Servo max"
+                            v-model="editDispenserForm.servo_max" step="1">
                     </div>
                     <!-- Servo angles -->
                     <div class="input-group mb-3">
                         <span class="input-group-text">Default angle</span>
-                        <input type="text" class="form-control" placeholder="90" aria-label="Default angle"
-                            v-model="editDispenserForm.angle_default">
+                        <input type="number" class="form-control" placeholder="90" aria-label="Default angle"
+                            v-model="editDispenserForm.angle_default" step="1">
                         <span class="input-group-text">Chute angle</span>
-                        <input type="text" class="form-control" placeholder="0" aria-label="Chute angle"
-                            v-model="editDispenserForm.angle_chute">
+                        <input type="number" class="form-control" placeholder="0" aria-label="Chute angle"
+                            v-model="editDispenserForm.angle_chute" step="1">
                     </div>
                     <!-- Smoothing -->
                     <div class="form-check form-switch mb-1">
@@ -164,11 +164,11 @@
                     </div>
                     <div class="input-group mb-3">
                         <span class="input-group-text">Smooth duration (s)</span>
-                        <input type="text" class="form-control" placeholder="1" aria-label="Smooth duration"
-                            v-model="editDispenserForm.smooth_duration">
+                        <input type="number" class="form-control" placeholder="1" aria-label="Smooth duration"
+                            v-model="editDispenserForm.smooth_duration" step="0.1">
                         <span class="input-group-text">Smooth step time (s)</span>
-                        <input type="text" class="form-control" placeholder="10" aria-label="Smooth step time"
-                            v-model="editDispenserForm.step_time">
+                        <input type="number" class="form-control" placeholder="0.01" aria-label="Smooth step time"
+                            v-model="editDispenserForm.step_time" step="0.01">
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-outline-danger me-2" data-bs-dismiss="modal">Cancel</button>
