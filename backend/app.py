@@ -28,12 +28,12 @@ cors = CORS(app, resources={r"/*": {"origins": "*"}})
 calendar = Calendar()
 settings = Settings() # config.ini is created if it doesn't exist
 notifications = Notifications()
-pillDatabase = PillDatabase()
+pill_database = PillDatabase()
 printer = Printer()
 dispenser = Dispenser(i2c_bus=3, i2c_address=0x40)
 
 def schedule_rounds():
-    for round in pillDatabase.get_rounds():
+    for round in pill_database.get_rounds():
         round_name = round['name']
         try:
             scheduler.remove_job(round_name)
@@ -62,14 +62,14 @@ def handle_round(round_name):
     print(f"Handling round {round_name}")
 
     # Handle pill dispense
-    pills = pillDatabase.get_pills()
+    pills = pill_database.get_pills()
     for pill in pills:
         if round_name in pill['round']:
             dispenser.dispense_pill(pill['dispenser'], pill['number'])
             notifications.notification(f"{pill['name']} dispensed", title="Pill dispensed", priority="default", tags="pill")
 
     # Mark round as taken
-    pillDatabase.set_round_taken_by_name(round_name, 1)
+    pill_database.set_round_taken_by_name(round_name, 1)
 
     # Handle reciept printing
     reciept_rounds = settings.get_config_dict()['receipt_rounds']
@@ -77,7 +77,7 @@ def handle_round(round_name):
         print_calendar()
 
 def unlock_dispenser(round_name):
-    pillDatabase.set_round_taken_by_name(round_name, 0)
+    pill_database.set_round_taken_by_name(round_name, 0)
 
 schedule_rounds()
 
@@ -109,7 +109,7 @@ def get_version():
 @app.route('/api/pill_warning', methods=['GET'])
 def pill_warning():
     # get the next round
-    next_round = pillDatabase.get_next_round()
+    next_round = pill_database.get_next_round()
 
     if next_round is None:
         response = {
@@ -202,7 +202,7 @@ def pills():
     if request.method == 'GET':
         response = {
             "status": "success",
-            "pills": pillDatabase.get_pills()
+            "pills": pill_database.get_pills()
         }
         return jsonify(response)
     
@@ -210,7 +210,7 @@ def pills():
     elif request.method == 'POST':
         data = request.get_json()
         try:
-            pillDatabase.add_pill(
+            pill_database.add_pill(
                 str(data['name']).strip(),
                 str(data['round']).strip(),
                 int(str(data['number']).strip()),
@@ -233,7 +233,7 @@ def pills():
     elif request.method == 'PUT':
         data = request.get_json()
         try:
-            pillDatabase.update_pill(
+            pill_database.update_pill(
                 int(str(data['id']).strip()),
                 str(data['name']).strip(),
                 str(data['round']).strip(),
@@ -257,7 +257,7 @@ def pills():
     elif request.method == 'DELETE':
         data = request.get_json()
         try:
-            pillDatabase.delete_pill(data['id'])
+            pill_database.delete_pill(data['id'])
         except:
             response = {
                 "status": "error",
@@ -284,7 +284,7 @@ def rounds():
     if request.method == 'GET':
         response = {
             "status": "success",
-            "rounds": pillDatabase.get_rounds()
+            "rounds": pill_database.get_rounds()
         }
         return jsonify(response)
     
@@ -292,7 +292,7 @@ def rounds():
     elif request.method == 'POST':
         data = request.get_json()
         try:
-            pillDatabase.add_round(
+            pill_database.add_round(
                 str(data['name']).strip(),
                 str(data['time']).strip()
                 )
@@ -314,7 +314,7 @@ def rounds():
     elif request.method == 'PUT':
         data = request.get_json()
         try:
-            pillDatabase.update_round(
+            pill_database.update_round(
                 int(str(data['id']).strip()),
                     str(data['name']).strip(),
                     str(data['time']).strip()
@@ -337,7 +337,7 @@ def rounds():
     elif request.method == 'DELETE':
         data = request.get_json()
         try:
-            pillDatabase.delete_round(
+            pill_database.delete_round(
                 int(str(data['id']).strip())
                 )
         except:
@@ -367,7 +367,7 @@ def dispensers():
     if request.method == 'GET':
         response = {
             "status": "success",
-            "dispensers": pillDatabase.get_dispensers()
+            "dispensers": pill_database.get_dispensers()
         }
         return jsonify(response)
     
@@ -375,7 +375,7 @@ def dispensers():
     elif request.method == 'POST':
         data = request.get_json()
         try:
-            pillDatabase.add_dispenser(
+            pill_database.add_dispenser(
                 int(str(data['index']).strip()),
                 int(str(data['servo_min']).strip()),
                 int(str(data['servo_max']).strip()),
@@ -402,7 +402,7 @@ def dispensers():
     elif request.method == 'PUT':
         data = request.get_json()
         try:
-            pillDatabase.update_dispenser(
+            pill_database.update_dispenser(
                 int(str(data['id']).strip()),
                 int(str(data['index']).strip()),
                 int(str(data['servo_min']).strip()),
@@ -430,7 +430,7 @@ def dispensers():
     elif request.method == 'DELETE':
         data = request.get_json()
         try:
-            pillDatabase.delete_dispenser(
+            pill_database.delete_dispenser(
                 int(str(data['id']).strip())
                 )
         except:
@@ -494,9 +494,9 @@ def print_qr():
 def mark_round_taken():
     # Trying to figure out a way to mark the current round taken
     # whether that's the next manual round, or the current overdue round 
-    next_round = pillDatabase.get_next_round()
+    next_round = pill_database.get_next_round()
     if next_round is not None:
-        pillDatabase.set_round_taken_by_name(next_round['name'], 1)
+        pill_database.set_round_taken_by_name(next_round['name'], 1)
         response = {
             "status": "success",
         }
