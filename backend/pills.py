@@ -93,6 +93,23 @@ class PillDatabase():
             "dispensers": self.get_dispensers()
         }
     
+    def get_dispenser(self, index):
+        self.cur.execute("SELECT * FROM dispensers WHERE dispenser_index=?", (index,))
+        result = self.cur.fetchone()
+        if result is None:
+            return None
+        return {
+            "id": result[0],
+            "index": result[1],
+            "servo_min": result[2],
+            "servo_max": result[3],
+            "angle_default": result[4],
+            "angle_chute": result[5],
+            "smooth_duration": result[6],
+            "step_time": result[7],
+            "smooth_enabled": result[8]
+        }
+
     def get_next_round(self):
         now = datetime.now(tz=self.calendar.timezone)
         # if the previous round has not been taken, return it
