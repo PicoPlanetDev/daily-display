@@ -7,6 +7,7 @@ if not os.path.isfile('Adafruit_Thermal.py'):
 from Adafruit_Thermal import *
 from serial import SerialException
 import settings
+import notifications
 
 class Printer:
     def __init__(self):
@@ -24,6 +25,16 @@ class Printer:
                 # disable printer if it's not found
                 self.printer_enabled = False
                 self.config.set_key("Printer", "printer_enabled", "false")
+                return
+        
+        self.check_paper()
+            
+    def check_paper(self):
+        if not self.printer_enabled:
+            return
+
+        if not self.printer.hasPaper():
+            notifications.Notifications().notification("Printer out of paper", "Daily Display", "urgent")
 
     def print_calendar(self, calendar, date):
         if not self.printer_enabled:
@@ -56,6 +67,8 @@ class Printer:
     
     def start(self):
         self.printer.begin(45)
+
+        self.check_paper()
 
     def end(self):
         self.printer.feed(5)
