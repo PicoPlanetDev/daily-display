@@ -30,11 +30,12 @@ class Dispenser:
         self.config = settings.Settings()
         self.config_dict = self.config.get_config_dict()
         self.dispenser_enabled = self.config_dict["dispenser_enabled"]
-        if not self.dispenser_enabled:
-            return
 
         self.pill_database = pills.PillDatabase()
         self.refresh_dispenser_data()
+
+        if not self.dispenser_enabled:
+            return
         
         self.pwm = PCA9685.PCA9685(i2c_bus, i2c_address)
         self.pwm.set_pwm_freq(50) # 50 Hz drives SG90 servo motors well
