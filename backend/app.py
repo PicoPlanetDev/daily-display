@@ -420,6 +420,7 @@ def dispensers():
             }
             return jsonify(response)
         else:
+            dispenser.refresh_dispenser_data()
             notifications.notification(f"Dispenser {data['index']} edited", title="Dispenser edited", priority="default", tags="gear")
             response = {
                 "status": "success",
