@@ -1,4 +1,5 @@
 <script setup>
+import DispenserList from '../components/DispenserList.vue';
 import PillList from '../components/PillList.vue';
 import RoundList from '../components/RoundList.vue';
 import SettingsForm from '../components/SettingsForm.vue';
@@ -15,5 +16,6 @@ import SettingsForm from '../components/SettingsForm.vue';
     <hr>
     <PillList />
     <RoundList />
+    <DispenserList />
   </div>
 </template>

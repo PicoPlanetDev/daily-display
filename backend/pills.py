@@ -25,6 +25,21 @@ class PillDatabase():
         self.cur.execute('''CREATE TABLE IF NOT EXISTS rounds
             (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, time TEXT, taken INTEGER)''')
         self.conn.commit()
+
+        # Create the dispensers table if it doesn't exist
+        self.cur.execute('''CREATE TABLE IF NOT EXISTS dispensers
+            (id INTEGER PRIMARY KEY AUTOINCREMENT, dispenser_index NUMBER, servo_min INTEGER, servo_max INTEGER, angle_default INTEGER, angle_chute INTEGER, smooth_duration REAL, step_time REAL, smooth_enabled INTEGER)''')
+        self.conn.commit()
+        # Create the default dispensers if they don't exist
+        self.create_default_dispensers()
+
+    def create_default_dispensers(self):
+        # Check how many dispensers there are
+        dispensers = self.get_dispensers()
+        if len(dispensers) < 16:
+            # Create the default dispensers
+            for i in range(16):
+                self.add_dispenser(i, 100, 500, 90, 0, 1, 0.01, 1)
     
     def get_pills(self):
         self.cur.execute("SELECT * FROM pills")
@@ -53,10 +68,29 @@ class PillDatabase():
             })
         return rounds
     
-    def get_pills_and_rounds(self):
+    def get_dispensers(self):
+        self.cur.execute("SELECT * FROM dispensers")
+        result = self.cur.fetchall()
+        dispensers = []
+        for dispenser in result:
+            dispensers.append({
+                "id": dispenser[0],
+                "index": dispenser[1],
+                "servo_min": dispenser[2],
+                "servo_max": dispenser[3],
+                "angle_default": dispenser[4],
+                "angle_chute": dispenser[5],
+                "smooth_duration": dispenser[6],
+                "step_time": dispenser[7],
+                "smooth_enabled": dispenser[8]
+            })
+        return dispensers
+    
+    def get_all(self):
         return {
             "pills": self.get_pills(),
-            "rounds": self.get_rounds()
+            "rounds": self.get_rounds(),
+            "dispensers": self.get_dispensers()
         }
     
     def get_next_round(self):
@@ -117,15 +151,46 @@ class PillDatabase():
                 "soon": False,
             }
 
+    # --- Create ---
+    def add_pill(self, name: str, round: str, number: int, dispenser: int):
+        """Adds a pill to the database
 
-    def add_pill(self, name, round, number, dispenser):
+        Args:
+            name (str): The pill's name
+            round (str): The rounds the pill is taken in
+            number (int): The number of pills to dispense in each round
+            dispenser (int): The index of the dispenser to use
+        """
         self.cur.execute("INSERT INTO pills (name, round, number, dispenser) VALUES (?, ?, ?, ?)", (name, round, number, dispenser))
         self.conn.commit()
 
-    def add_round(self, name, time):
+    def add_round(self, name: str, time: str):
+        """Adds a round to the database
+
+        Args:
+            name (str): The round's name
+            time (str): The time the round is taken, in the format hh:mm (24 hour)
+        """
         self.cur.execute("INSERT INTO rounds (name, time, taken) VALUES (?, ?, ?)", (name, time, 0))
         self.conn.commit()
+
+    def add_dispenser(self, index: int, servo_min: int, servo_max: int, angle_default, angle_chute, smooth_duration: float, step_time: float, smooth_enabled: int):
+        """Adds a dispenser to the database
+
+        Args:
+            index (int): The index of the dispenser
+            servo_min (int): The minimum angle of the servo
+            servo_max (int): The maximum angle of the servo
+            angle_default (int): The default angle of the servo
+            angle_chute (int): The angle of the servo when the chute is open
+            smooth_duration (float): The duration of the smooth movement
+            step_time (float): The time between each step of the smooth movement
+            smooth_enabled (int): Whether or not the smooth movement is enabled (1 or 0)
+        """
+        self.cur.execute("INSERT INTO dispensers (dispenser_index, servo_min, servo_max, angle_default, angle_chute, smooth_duration, step_time, smooth_enabled) VALUES (?, ?, ?, ?, ?, ?, ?, ?)", (index, servo_min, servo_max, angle_default, angle_chute, smooth_duration, step_time, smooth_enabled))
+        self.conn.commit()
     
+    # --- Delete ---
     def delete_pill(self, id):
         self.cur.execute("DELETE FROM pills WHERE id=?", (id,))
         self.conn.commit()
@@ -133,15 +198,25 @@ class PillDatabase():
     def delete_round(self, id):
         self.cur.execute("DELETE FROM rounds WHERE id=?", (id,))
         self.conn.commit()
+
+    def delete_dispenser(self, id):
+        self.cur.execute("DELETE FROM dispensers WHERE id=?", (id,))
+        self.conn.commit()
     
-    def update_pill(self, id, name, round, number, dispenser):
+    # --- Update ---
+    def update_pill(self, id, name: str, round: str, number: int, dispenser: int):
         self.cur.execute("UPDATE pills SET name=?, round=?, number=?, dispenser=? WHERE id=?", (name, round, number, dispenser, id))
         self.conn.commit()
     
-    def update_round(self, id, name, time):
+    def update_round(self, id, name: str, time: str):
         self.cur.execute("UPDATE rounds SET name=?, time=? WHERE id=?", (name, time, id))
         self.conn.commit()
+
+    def update_dispenser(self, id, index: int, servo_min: int, servo_max: int, angle_default, angle_chute, smooth_duration: float, step_time: float, smooth_enabled: int):
+        self.cur.execute("UPDATE dispensers SET dispenser_index=?, servo_min=?, servo_max=?, angle_default=?, angle_chute=?, smooth_duration=?, step_time=?, smooth_enabled=? WHERE id=?", (index, servo_min, servo_max, angle_default, angle_chute, smooth_duration, step_time, smooth_enabled, id))
+        self.conn.commit()
     
+    # --- Round-specific tasks ---
     def set_round_taken(self, id, taken):
         self.cur.execute("UPDATE rounds SET taken=? WHERE id=?", (taken, id))
         self.conn.commit()
@@ -154,3 +229,4 @@ class PillDatabase():
         self.cur.execute("SELECT COUNT(*) FROM rounds WHERE taken = 1")
         result = self.cur.fetchone()
         return True if result[0] == 1 else False
+    

@@ -361,6 +361,98 @@ def rounds():
         "message": "Method not allowed"}
         return jsonify(response), 405
 
+@app.route('/api/dispensers', methods=['GET', 'POST', 'PUT', 'DELETE'])
+def dispensers():
+    # read
+    if request.method == 'GET':
+        response = {
+            "status": "success",
+            "dispensers": pillDatabase.get_dispensers()
+        }
+        return jsonify(response)
+    
+    # create
+    elif request.method == 'POST':
+        data = request.get_json()
+        try:
+            pillDatabase.add_dispenser(
+                int(str(data['index']).strip()),
+                int(str(data['servo_min']).strip()),
+                int(str(data['servo_max']).strip()),
+                int(str(data['angle_default']).strip()),
+                int(str(data['angle_chute']).strip()),
+                float(str(data['smooth_duration']).strip()),
+                float(str(data['step_time']).strip()),
+                0 if str(data['smooth_enabled']).strip() == 'false' else 1
+                )
+        except:
+            response = {
+                "status": "error",
+                "message": "Invalid data"
+            }
+            return jsonify(response)
+        else:
+            notifications.notification(f"Dispenser {data['index']} added", title="New dispenser added", priority="default", tags="gear")
+            response = {
+                "status": "success",
+            }
+            return jsonify(response)
+        
+    # update
+    elif request.method == 'PUT':
+        data = request.get_json()
+        try:
+            pillDatabase.update_dispenser(
+                int(str(data['id']).strip()),
+                int(str(data['index']).strip()),
+                int(str(data['servo_min']).strip()),
+                int(str(data['servo_max']).strip()),
+                int(str(data['angle_default']).strip()),
+                int(str(data['angle_chute']).strip()),
+                float(str(data['smooth_duration']).strip()),
+                float(str(data['step_time']).strip()),
+                int(str(data['smooth_enabled']).strip())
+                )
+        except:
+            response = {
+                "status": "error",
+                "message": "Invalid data"
+            }
+            return jsonify(response)
+        else:
+            notifications.notification(f"Dispenser {data['index']} edited", title="Dispenser edited", priority="default", tags="gear")
+            response = {
+                "status": "success",
+            }
+            return jsonify(response)
+        
+    # delete
+    elif request.method == 'DELETE':
+        data = request.get_json()
+        try:
+            pillDatabase.delete_dispenser(
+                int(str(data['id']).strip())
+                )
+        except:
+            response = {
+                "status": "error",
+                "message": "Invalid data"
+            }
+            return jsonify(response)
+        else:
+            notifications.notification(f"Dispenser {data['index']} deleted", title="Dispenser deleted", priority="default", tags="x")
+            response = {
+                "status": "success",
+            }
+            return jsonify(response)
+        
+    # otherwise return an http status code 405 (method not allowed)
+    else:
+        response = {
+        "status": "error",
+        "message": "Method not allowed"}
+        return jsonify(response), 405
+
 @app.route('/api/print_receipt', methods=['GET'])
 def print_receipt():
     print_calendar()

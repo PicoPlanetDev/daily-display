@@ -86,4 +86,4 @@ class Dispenser:
         self.set_servo_angle(dispenser_index, SERVO_CHUTE)
         time.sleep(1)
         self.set_servo_angle(dispenser_index, SERVO_DEFAULT)
-        time.sleep(1)        
+        time.sleep(1)
