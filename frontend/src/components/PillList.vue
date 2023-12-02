@@ -1,22 +1,22 @@
 <template>
-    <div class="row">
-        <div class="col-sm-10">
-            <h3><i class="bi bi-prescription"></i> Pills</h3>
-            <hr>
-            <div>
-                <button type="button" class="btn btn-primary me-3" data-bs-toggle="modal" data-bs-target="#addPillModal">
-                    <i class="bi bi-plus"></i> Add Pill
-                </button>
-                <button type="button" class="btn btn-primary" @click="getPills">
-                    <i class="bi bi-arrow-clockwise"></i> Refresh list
-                </button>
+    <div>
+        <h3><i class="bi bi-prescription"></i> Pills</h3>
+        <hr>
+        <div>
+            <button type="button" class="btn btn-primary me-3" data-bs-toggle="modal" data-bs-target="#addPillModal">
+                <i class="bi bi-plus"></i> Add Pill
+            </button>
+            <button type="button" class="btn btn-outline-secondary" @click="getPills">
+                <i class="bi bi-arrow-clockwise"></i> Refresh list
+            </button>
+        </div>
+        <div>
+            <div class="mt-3" v-if="pills.length == 0">
+                No pills found. Click the button above to create one, or try refreshing the list.
+                <hr>
             </div>
-            <div>
-                <div class="mt-3" v-if="pills.length == 0">
-                    No pills found. Click the button above to create one, or try refreshing the list.
-                    <hr>
-                </div>
-                <table class="table table-hover" v-if="pills.length > 0">
+            <div class="table-responsive">
+                <table class="table table-dark" v-if="pills.length > 0">
                     <thead>
                         <tr>
                             <th scope="col">Name</th>
