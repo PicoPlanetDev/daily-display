@@ -2,6 +2,7 @@ from PCA9685_smbus2 import PCA9685
 import time
 import settings
 import pills
+import notifications
 
 # True limits seem to be 86 to 535
 # SERVO_MIN = 100
@@ -61,6 +62,13 @@ class Dispenser:
         self.pwm.set_pwm(servo_channel, 0, pulse)
 
     def smooth_angle_change(self, servo_channel: int, angle_start, angle_end):
+        """Interpolates between two angles to smoothly change the angle of a servo motor
+        
+        Args:
+            servo_channel (int): The channel, from 0 to 15, of the servo motor on the PCA9685
+            angle_start: The angle to start the interpolation at, from 0 to 180
+            angle_end: The angle to end the interpolation at, from 0 to 180
+        """
         duration = self.dispensers[servo_channel]["smooth_duration"]
         step_time = self.dispensers[servo_channel]["step_time"]
         steps = int(duration / step_time)
