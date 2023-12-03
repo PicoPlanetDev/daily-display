@@ -73,4 +73,5 @@ class Sensors():
 
 def example_callback(channel):
     print(f"Callback triggered on channel {channel}")
-    Notifications().notification(f"Callback triggered on channel {channel}", "Daily Display", "normal")
+    notifications = Notifications()
+    notifications.notification(f"Callback triggered on channel {channel}", "Daily Display", "normal")
