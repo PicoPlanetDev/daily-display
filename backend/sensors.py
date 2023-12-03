@@ -29,6 +29,7 @@ class Sensors():
         sensor_pins = []
         for dispenser in self.dispensers:
             if dispenser["sensor_enabled"] == 1:
+                print(dispenser)
                 sensor_pins.append(dispenser["sensor_pin"])
         # Set them all up as inputs with pull-up resistors
         GPIO.setup(sensor_pins, GPIO.IN, pull_up_down=GPIO.PUD_UP)
