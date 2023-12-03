@@ -99,9 +99,6 @@ class Dispenser:
         """        
         if not self.dispenser_enabled:
             return
-        
-        self.sensors.unregister_callback(dispenser_index)
-        self.sensors.register_callback(dispenser_index, "falling", self.dispense_pill_callback, 500)
 
         for i in range(number_of_pills):
             self.cycle_dispenser(dispenser_index)
@@ -140,6 +137,9 @@ class Dispenser:
         """        
         if not self.dispenser_enabled:
             return
+        
+        self.sensors.unregister_callback(dispenser_index)
+        self.sensors.register_callback(dispenser_index, "falling", self.dispense_pill_callback, 500)
         
         angle_default = self.dispensers[dispenser_index]["angle_default"]
         angle_chute = self.dispensers[dispenser_index]["angle_chute"]
