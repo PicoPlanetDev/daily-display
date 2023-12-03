@@ -100,9 +100,8 @@ class Dispenser:
         if not self.dispenser_enabled:
             return
         
-        callback_function = self.dispense_pill_callback
         self.sensors.unregister_callback(dispenser_index)
-        self.sensors.register_callback(dispenser_index, "falling", callback_function, 500)
+        self.sensors.register_callback(dispenser_index, "falling", lambda: self.dispense_pill_callback, 500)
 
         for i in range(number_of_pills):
             self.cycle_dispenser(dispenser_index)
