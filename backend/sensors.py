@@ -17,19 +17,21 @@ class Sensors():
         self.pill_database = PillDatabase()
         self.refresh_dispenser_data()
 
+        self.setup_sensors()
+
     def refresh_dispenser_data(self):
         """Refreshes the dispenser data from the database"""
         self.dispensers = self.pill_database.get_dispensers()
 
     def setup_sensors(self):
         """Sets up the GPIO for the sensors"""
+        self.refresh_dispenser_data()
         # Set up GPIO for the sensors
         GPIO.setmode(orangepi.zero3.BOARD)
         # Get all the pins that need to be inputs
         sensor_pins = []
         for dispenser in self.dispensers:
             if dispenser["sensor_enabled"] == 1:
-                print(dispenser)
                 sensor_pins.append(dispenser["sensor_pin"])
         # Set them all up as inputs with pull-up resistors
         GPIO.setup(sensor_pins, GPIO.IN, pull_up_down=GPIO.PUD_UP)

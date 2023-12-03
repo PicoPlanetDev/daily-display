@@ -54,6 +54,7 @@ class Dispenser:
     def refresh_dispenser_data(self):
         """Refreshes the dispenser data from the database"""
         self.dispensers = self.pill_database.get_dispensers()
+        self.sensors.setup_sensors()
 
     def set_servo_angle(self, servo_channel: int, angle):
         """Sets the angle of a servo motor connected to the PCA9685

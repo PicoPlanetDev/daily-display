@@ -370,35 +370,6 @@ def dispensers():
             "dispensers": pill_database.get_dispensers()
         }
         return jsonify(response)
-    
-    # create
-    elif request.method == 'POST':
-        data = request.get_json()
-        try:
-            pill_database.add_dispenser(
-                int(str(data['index']).strip()),
-                int(str(data['servo_min']).strip()),
-                int(str(data['servo_max']).strip()),
-                int(str(data['angle_default']).strip()),
-                int(str(data['angle_chute']).strip()),
-                float(str(data['smooth_duration']).strip()),
-                float(str(data['step_time']).strip()),
-                int(str(data['smooth_enabled']).strip()),
-                int(str(data['sensor_pin']).strip()),
-                int(str(data['sensor_enabled']).strip())
-                )
-        except:
-            response = {
-                "status": "error",
-                "message": "Invalid data"
-            }
-            return jsonify(response)
-        else:
-            notifications.notification(f"Dispenser {data['index']} added", title="New dispenser added", priority="default", tags="gear")
-            response = {
-                "status": "success",
-            }
-            return jsonify(response)
         
     # update
     elif request.method == 'PUT':
@@ -426,26 +397,6 @@ def dispensers():
         else:
             dispenser.refresh_dispenser_data()
             notifications.notification(f"Dispenser {data['index']} edited", title="Dispenser edited", priority="default", tags="gear")
-            response = {
-                "status": "success",
-            }
-            return jsonify(response)
-        
-    # delete
-    elif request.method == 'DELETE':
-        data = request.get_json()
-        try:
-            pill_database.delete_dispenser(
-                int(str(data['id']).strip())
-                )
-        except:
-            response = {
-                "status": "error",
-                "message": "Invalid data"
-            }
-            return jsonify(response)
-        else:
-            notifications.notification(f"Dispenser {data['index']} deleted", title="Dispenser deleted", priority="default", tags="x")
             response = {
                 "status": "success",
             }
