@@ -141,3 +141,4 @@ cython_debug/
 *.ini
 *.db
 Adafruit_Thermal.py
+OPi_GPIO/

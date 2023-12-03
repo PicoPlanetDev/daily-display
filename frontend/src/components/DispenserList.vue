@@ -27,6 +27,8 @@
                             <th scope="col">Smooth Enabled</th>
                             <th scope="col">Smooth Duration</th>
                             <th scope="col">Smooth Step Time</th>
+                            <th scope="col">Sensor Pin</th>
+                            <th scope="col">Sensor Enabled</th>
                             <th><!-- Left blank for buttons --></th>
                         </tr>
                     </thead>
@@ -40,6 +42,8 @@
                             <td>{{ dispenser.smooth_enabled }}</td>
                             <td>{{ dispenser.smooth_duration }}</td>
                             <td>{{ dispenser.step_time }}</td>
+                            <td>{{ dispenser.sensor_pin }}</td>
+                            <td>{{ dispenser.sensor_enabled }}</td>
                             <td>
                                 <div class="btn-group" role="group">
                                     <button type="button" class="btn btn-outline-warning btn-sm"
@@ -163,12 +167,22 @@
                         <label class="form-check-label" for="smoothingEnabledCheck">Smooth servo rotation</label>
                     </div>
                     <div class="input-group mb-3">
-                        <span class="input-group-text">Smooth duration (s)</span>
+                        <span class="input-group-text">Duration (s)</span>
                         <input type="number" class="form-control" placeholder="1" aria-label="Smooth duration"
                             v-model="editDispenserForm.smooth_duration" step="0.1">
-                        <span class="input-group-text">Smooth step time (s)</span>
+                        <span class="input-group-text">Step time (s)</span>
                         <input type="number" class="form-control" placeholder="0.01" aria-label="Smooth step time"
                             v-model="editDispenserForm.step_time" step="0.01">
+                    </div>
+                    <div class="form-check form-switch mb-1">
+                        <input class="form-check-input" type="checkbox" role="switch" id="sensorEnabledCheck"
+                            v-model="editDispenserForm.sensor_enabled">
+                        <label class="form-check-label" for="sensorEnabledCheck">IR reflective sensor</label>
+                    </div>
+                    <div class="input-group mb-3">
+                        <span class="input-group-text">Sensor pin</span>
+                        <input type="number" class="form-control" placeholder="1" aria-label="Sensor pin"
+                            v-model="editDispenserForm.sensor_pin" step="1">
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-outline-danger me-2" data-bs-dismiss="modal">Cancel</button>
@@ -230,6 +244,8 @@ export default {
                 smooth_duration: 0,
                 step_time: 0,
                 smooth_enabled: 0,
+                sensor_pin: 0,
+                sensor_enabled: 0,
             },
             deleteDispenserForm: {
                 id: '',
@@ -278,6 +294,8 @@ export default {
             this.editDispenserForm.smooth_duration = dispenser.smooth_duration;
             this.editDispenserForm.step_time = dispenser.step_time;
             this.editDispenserForm.smooth_enabled = dispenser.smooth_enabled == 1;
+            this.editDispenserForm.sensor_pin = dispenser.sensor_pin;
+            this.editDispenserForm.sensor_enabled = dispenser.sensor_enabled == 1;
         },
         setupFormDeleteDispenser(dispenser) {
             this.deleteDispenserForm.id = dispenser.id;
@@ -311,6 +329,8 @@ export default {
                 smooth_duration: this.editDispenserForm.smooth_duration,
                 step_time: this.editDispenserForm.step_time,
                 smooth_enabled: this.editDispenserForm.smooth_enabled ? 1 : 0,
+                sensor_pin: this.editDispenserForm.sensor_pin,
+                sensor_enabled: this.editDispenserForm.sensor_enabled ? 1 : 0,
             })
                 .then(response => {
                     //console.log(response);

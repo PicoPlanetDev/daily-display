@@ -383,7 +383,9 @@ def dispensers():
                 int(str(data['angle_chute']).strip()),
                 float(str(data['smooth_duration']).strip()),
                 float(str(data['step_time']).strip()),
-                0 if str(data['smooth_enabled']).strip() == 'false' else 1
+                int(str(data['smooth_enabled']).strip()),
+                int(str(data['sensor_pin']).strip()),
+                int(str(data['sensor_enabled']).strip())
                 )
         except:
             response = {
@@ -411,7 +413,9 @@ def dispensers():
                 int(str(data['angle_chute']).strip()),
                 float(str(data['smooth_duration']).strip()),
                 float(str(data['step_time']).strip()),
-                int(str(data['smooth_enabled']).strip())
+                int(str(data['smooth_enabled']).strip()),
+                int(str(data['sensor_pin']).strip()),
+                int(str(data['sensor_enabled']).strip())
                 )
         except:
             response = {

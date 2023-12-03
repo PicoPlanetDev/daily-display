@@ -28,7 +28,7 @@ class PillDatabase():
 
         # Create the dispensers table if it doesn't exist
         self.cur.execute('''CREATE TABLE IF NOT EXISTS dispensers
-            (id INTEGER PRIMARY KEY AUTOINCREMENT, dispenser_index NUMBER, servo_min INTEGER, servo_max INTEGER, angle_default INTEGER, angle_chute INTEGER, smooth_duration REAL, step_time REAL, smooth_enabled INTEGER)''')
+            (id INTEGER PRIMARY KEY AUTOINCREMENT, dispenser_index NUMBER, servo_min INTEGER, servo_max INTEGER, angle_default INTEGER, angle_chute INTEGER, smooth_duration REAL, step_time REAL, smooth_enabled INTEGER, sensor_pin INTEGER, sensor_enabled INTEGER)''')
         self.conn.commit()
         # Create the default dispensers if they don't exist
         self.create_default_dispensers()
@@ -39,7 +39,7 @@ class PillDatabase():
         if len(dispensers) < 16:
             # Create the default dispensers
             for i in range(16):
-                self.add_dispenser(i, 100, 500, 90, 0, 1, 0.01, 1)
+                self.add_dispenser(i, 100, 500, 90, 0, 1, 0.01, 1, -1, 0)
     
     def get_pills(self):
         self.cur.execute("SELECT * FROM pills")
@@ -82,7 +82,9 @@ class PillDatabase():
                 "angle_chute": dispenser[5],
                 "smooth_duration": dispenser[6],
                 "step_time": dispenser[7],
-                "smooth_enabled": dispenser[8]
+                "smooth_enabled": dispenser[8],
+                "sensor_pin": dispenser[9],
+                "sensor_enabled": dispenser[10]
             })
         return dispensers
     
@@ -107,7 +109,9 @@ class PillDatabase():
             "angle_chute": result[5],
             "smooth_duration": result[6],
             "step_time": result[7],
-            "smooth_enabled": result[8]
+            "smooth_enabled": result[8],
+            "sensor_pin": result[9],
+            "sensor_enabled": result[10]
         }
 
     def get_next_round(self):
@@ -191,7 +195,7 @@ class PillDatabase():
         self.cur.execute("INSERT INTO rounds (name, time, taken) VALUES (?, ?, ?)", (name, time, 0))
         self.conn.commit()
 
-    def add_dispenser(self, index: int, servo_min: int, servo_max: int, angle_default, angle_chute, smooth_duration: float, step_time: float, smooth_enabled: int):
+    def add_dispenser(self, index: int, servo_min: int, servo_max: int, angle_default, angle_chute, smooth_duration: float, step_time: float, smooth_enabled: int, sensor_pin: int, sensor_enabled: int):
         """Adds a dispenser to the database
 
         Args:
@@ -203,8 +207,10 @@ class PillDatabase():
             smooth_duration (float): The duration of the smooth movement
             step_time (float): The time between each step of the smooth movement
             smooth_enabled (int): Whether or not the smooth movement is enabled (1 or 0)
+            sensor_pin (int): The GPIO pin of the sensor
+            sensor_enabled (int): Whether or not the sensor is enabled (1 or 0)
         """
-        self.cur.execute("INSERT INTO dispensers (dispenser_index, servo_min, servo_max, angle_default, angle_chute, smooth_duration, step_time, smooth_enabled) VALUES (?, ?, ?, ?, ?, ?, ?, ?)", (index, servo_min, servo_max, angle_default, angle_chute, smooth_duration, step_time, smooth_enabled))
+        self.cur.execute("INSERT INTO dispensers (dispenser_index, servo_min, servo_max, angle_default, angle_chute, smooth_duration, step_time, smooth_enabled, sensor_pin, sensor_enabled) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (index, servo_min, servo_max, angle_default, angle_chute, smooth_duration, step_time, smooth_enabled, sensor_pin, sensor_enabled))
         self.conn.commit()
     
     # --- Delete ---
@@ -229,8 +235,8 @@ class PillDatabase():
         self.cur.execute("UPDATE rounds SET name=?, time=? WHERE id=?", (name, time, id))
         self.conn.commit()
 
-    def update_dispenser(self, id, index: int, servo_min: int, servo_max: int, angle_default, angle_chute, smooth_duration: float, step_time: float, smooth_enabled: int):
-        self.cur.execute("UPDATE dispensers SET dispenser_index=?, servo_min=?, servo_max=?, angle_default=?, angle_chute=?, smooth_duration=?, step_time=?, smooth_enabled=? WHERE id=?", (index, servo_min, servo_max, angle_default, angle_chute, smooth_duration, step_time, smooth_enabled, id))
+    def update_dispenser(self, id, index: int, servo_min: int, servo_max: int, angle_default, angle_chute, smooth_duration: float, step_time: float, smooth_enabled: int, sensor_pin: int, sensor_enabled: int):
+        self.cur.execute("UPDATE dispensers SET dispenser_index=?, servo_min=?, servo_max=?, angle_default=?, angle_chute=?, smooth_duration=?, step_time=?, smooth_enabled=?, sensor_pin=?, sensor_enabled=? WHERE id=?", (index, servo_min, servo_max, angle_default, angle_chute, smooth_duration, step_time, smooth_enabled, sensor_pin, sensor_enabled, id))
         self.conn.commit()
     
     # --- Round-specific tasks ---

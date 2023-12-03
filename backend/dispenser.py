@@ -1,8 +1,19 @@
+# ensure that OPi.GPIO module is installed
+import os
+if not os.path.isdir('OPi_GPIO'):
+    print("Downloading OPI.GPIO module")
+    os.system('git clone https://github.com/PicoPlanetDev/OPi.GPIO.git')
+    os.system('mv OPi.GPIO/ OPi_GPIO/')
+
 from PCA9685_smbus2 import PCA9685
 import time
-import settings
-import pills
-import notifications
+from settings import Settings
+from pills import PillDatabase
+from notifications import Notifications
+
+# GPIO
+from OPi_GPIO.OPi import GPIO
+from OPi_GPIO.orangepi import zero3
 
 # True limits seem to be 86 to 535
 # SERVO_MIN = 100
@@ -28,18 +39,28 @@ def map_range(value, inMin, inMax, outMin, outMax):
 
 class Dispenser:
     def __init__(self, i2c_bus, i2c_address):
-        self.config = settings.Settings()
+        # Set up settings
+        self.config = Settings()
         self.config_dict = self.config.get_config_dict()
         self.dispenser_enabled = self.config_dict["dispenser_enabled"]
-
-        self.pill_database = pills.PillDatabase()
-        self.refresh_dispenser_data()
-
+        # Cancel if dispenser is not in use
         if not self.dispenser_enabled:
             return
-        
+
+        # Get info about the dispensers
+        self.pill_database = PillDatabase()
+        self.refresh_dispenser_data()
+
+        # Be able to send notifications
+        self.notifications = Notifications()
+
+        # Actually set up the servo driver
         self.pwm = PCA9685.PCA9685(i2c_bus, i2c_address)
-        self.pwm.set_pwm_freq(50) # 50 Hz drives SG90 servo motors well
+        self.pwm.set_pwm_freq(50) # SG90 servos use a 50Hz PWM signal
+
+        # Set up GPIO for the sensors
+        GPIO.setmode(zero3.BOARD)
+        
 
     def refresh_dispenser_data(self):
         """Refreshes the dispenser data from the database"""
