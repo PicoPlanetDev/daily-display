@@ -100,6 +100,8 @@ class Dispenser:
         if not self.dispenser_enabled:
             return
 
+        self.sensors.register_callback(dispenser_index, "falling", self.dispense_pill_callback, 500)
+
         for i in range(number_of_pills):
             self.cycle_dispenser(dispenser_index)
 
@@ -114,6 +116,24 @@ class Dispenser:
         
         print(f"callback on {dispenser_index}")
         self.notifications.notification(f"Pill dispensed from dispenser {dispenser_index}", "Daily Display", "default")
+        self.pill_database.set_pill_dispensed(dispenser_index)
+
+        self.sensors.unregister_callback(dispenser_index)
+        self.sensors.register_callback(dispenser_index, "both", self.take_pill_callback, 500)
+
+    def take_pill_callback(self, dispenser_index):
+        """Callback for when a pill is taken from a dispenser
+
+        Args:
+            dispenser_index (int): The index of the dispenser that triggered the callback
+        """        
+        if not self.dispenser_enabled:
+            return
+        
+        print(f"callback on {dispenser_index}")
+        self.notifications.notification(f"Pill taken from dispenser {dispenser_index}", "Daily Display", "default")
+        self.pill_database.set_pill_taken(dispenser_index)
+
         self.sensors.unregister_callback(dispenser_index)
 
     def reset_dispenser(self, dispenser_index):
@@ -138,7 +158,7 @@ class Dispenser:
         if not self.dispenser_enabled:
             return
         
-        self.sensors.register_callback(dispenser_index, "falling", self.dispense_pill_callback, 500)
+        self.notifications.notification(f"Cycling dispenser {dispenser_index}", "Daily Display", "default", "gear")
         
         angle_default = self.dispensers[dispenser_index]["angle_default"]
         angle_chute = self.dispensers[dispenser_index]["angle_chute"]

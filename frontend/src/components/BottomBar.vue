@@ -3,6 +3,7 @@ import PillWarning from './PillWarning.vue';
 import GetButton from './GetButton.vue';
 import Version from './Version.vue';
 import { RouterLink } from 'vue-router';
+import PillStatus from './PillStatus.vue';
 </script>
 
 <template>
@@ -13,7 +14,8 @@ import { RouterLink } from 'vue-router';
                     <Version />
                 </div>
                 <div class="col">
-                    <PillWarning />
+                    <!-- <PillWarning /> -->
+                    <PillStatus />
                 </div>
                 <div class="col">
                     <GetButton path="/print_receipt" label="Print reciept" />

@@ -18,7 +18,7 @@ class PillDatabase():
     def ensure_database(self):
         # Create the table if it doesn't exist
         self.cur.execute('''CREATE TABLE IF NOT EXISTS pills
-            (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, round TEXT, number INTEGER, dispenser INTEGER)''')
+            (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, round TEXT, number INTEGER, dispenser INTEGER, dispensed INTEGER, taken INTEGER)''')
         self.conn.commit()
 
         # Create the rounds table if it doesn't exist
@@ -51,7 +51,9 @@ class PillDatabase():
                 "name": pill[1],
                 "round": pill[2],
                 "number": pill[3],
-                "dispenser": pill[4]
+                "dispenser": pill[4],
+                "dispensed": pill[5],
+                "taken": pill[6]
             })
         return pills
     
@@ -182,7 +184,7 @@ class PillDatabase():
             number (int): The number of pills to dispense in each round
             dispenser (int): The index of the dispenser to use
         """
-        self.cur.execute("INSERT INTO pills (name, round, number, dispenser) VALUES (?, ?, ?, ?)", (name, round, number, dispenser))
+        self.cur.execute("INSERT INTO pills (name, round, number, dispenser, dispensed, taken) VALUES (?, ?, ?, ?, 0, 0)", (name, round, number, dispenser))
         self.conn.commit()
 
     def add_round(self, name: str, time: str):
@@ -252,4 +254,14 @@ class PillDatabase():
         self.cur.execute("SELECT COUNT(*) FROM rounds WHERE taken = 1")
         result = self.cur.fetchone()
         return True if result[0] == 1 else False
+    
+    # Pill dispensed and taken
+    def set_pill_dispensed(self, dispenser_index):
+        # TODO: doesn't support multiple pills per round
+        self.cur.execute("UPDATE pills SET dispensed=1 WHERE dispenser=?", (dispenser_index,))
+        self.conn.commit()
+    
+    def set_pill_taken(self, dispenser_index):
+        self.cur.execute("UPDATE pills SET taken=1 WHERE dispenser=?", (dispenser_index,))
+        self.conn.commit()
     
