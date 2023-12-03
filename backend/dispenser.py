@@ -37,6 +37,9 @@ class Dispenser:
         if not self.dispenser_enabled:
             return
 
+        # Set up the sensors
+        self.sensors = Sensors()
+
         # Get info about the dispensers
         self.pill_database = PillDatabase()
         self.refresh_dispenser_data()
@@ -47,9 +50,6 @@ class Dispenser:
         # Actually set up the servo driver
         self.pwm = PCA9685.PCA9685(i2c_bus, i2c_address)
         self.pwm.set_pwm_freq(50) # SG90 servos use a 50Hz PWM signal
-
-        # Set up the sensors
-        self.sensors = Sensors()
 
     def refresh_dispenser_data(self):
         """Refreshes the dispenser data from the database"""
