@@ -34,7 +34,10 @@ class Sensors():
             if dispenser["sensor_enabled"] == 1:
                 sensor_pins.append(dispenser["sensor_pin"])
         # Set them all up as inputs with pull-up resistors
-        GPIO.setup(sensor_pins, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+        try:
+            GPIO.setup(sensor_pins, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+        except RuntimeError as e:
+            print(f"GPIO already set up, raising error: {e}")
 
     def register_callback(self, dispenser_index, edge, function, debounce):
         """Registers a callback for a dispenser
