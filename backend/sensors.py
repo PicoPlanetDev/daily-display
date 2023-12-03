@@ -1,5 +1,6 @@
 from pills import PillDatabase
 from settings import Settings
+from notifications import Notifications
 
 import OPi.GPIO as GPIO
 import orangepi.zero3
@@ -18,6 +19,8 @@ class Sensors():
         self.refresh_dispenser_data()
 
         self.setup_sensors()
+
+        self.register_callback(11, "rising", example_callback, 200)
 
     def refresh_dispenser_data(self):
         """Refreshes the dispenser data from the database"""
@@ -67,3 +70,7 @@ class Sensors():
             dispenser_index (int): The index of the dispenser to unregister the callback for
         """
         GPIO.remove_event_detect(self.dispensers[dispenser_index]["sensor_pin"])
+
+def example_callback(channel):
+    print(f"Callback triggered on channel {channel}")
+    Notifications().notification(f"Callback triggered on channel {channel}", "Daily Display", "normal")
