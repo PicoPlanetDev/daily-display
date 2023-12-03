@@ -101,6 +101,7 @@ class Dispenser:
             return
         
         callback_function = self.dispense_pill_callback
+        self.sensors.unregister_callback(dispenser_index)
         self.sensors.register_callback(dispenser_index, "falling", callback_function, 500)
 
         for i in range(number_of_pills):
