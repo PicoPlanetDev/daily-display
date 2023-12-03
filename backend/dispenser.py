@@ -140,6 +140,8 @@ class Dispenser:
         
         self.sensors.unregister_callback(dispenser_index)
         self.sensors.register_callback(dispenser_index, "falling", self.dispense_pill_callback, 500)
+        print(f"test on {dispenser_index}")
+        self.notifications.notification(f"test on {dispenser_index}", "Daily Display", "normal")
         
         angle_default = self.dispensers[dispenser_index]["angle_default"]
         angle_chute = self.dispensers[dispenser_index]["angle_chute"]
