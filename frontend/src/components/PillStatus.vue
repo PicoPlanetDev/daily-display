@@ -39,5 +39,8 @@ export default {
             this.getPills();
         }, 5000);
     },
+    unmounted() {
+        clearInterval(this.interval);
+    }
 }
 </script>
