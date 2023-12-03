@@ -37,7 +37,7 @@ export default {
         this.getPills();
         this.interval = setInterval(() => {
             this.getPills();
-        }, 1000);
+        }, 5000);
     },
 }
 </script>
