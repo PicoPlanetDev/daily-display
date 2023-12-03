@@ -101,7 +101,7 @@ class Dispenser:
             return
         
         self.sensors.unregister_callback(dispenser_index)
-        self.sensors.register_callback(dispenser_index, "falling", lambda: self.notifications.notification(f"Pill dispensed from dispenser {dispenser_index}", "Daily Display", "normal"), 500)
+        self.sensors.register_callback(dispenser_index, "falling", lambda: self.dispense_pill_callback, 500)
 
         for i in range(number_of_pills):
             self.cycle_dispenser(dispenser_index)
@@ -116,6 +116,7 @@ class Dispenser:
             return
         
         self.sensors.unregister_callback(dispenser_index)
+        print(f"callback on {dispenser_index}")
         self.notifications.notification(f"Pill dispensed from dispenser {dispenser_index}", "Daily Display", "normal")
 
     def reset_dispenser(self, dispenser_index):

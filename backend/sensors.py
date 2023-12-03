@@ -20,8 +20,6 @@ class Sensors():
 
         self.setup_sensors()
 
-        self.register_callback(0, "rising", example_callback, 200)
-
     def refresh_dispenser_data(self):
         """Refreshes the dispenser data from the database"""
         self.dispensers = self.pill_database.get_dispensers()
@@ -70,8 +68,3 @@ class Sensors():
             dispenser_index (int): The index of the dispenser to unregister the callback for
         """
         GPIO.remove_event_detect(self.dispensers[dispenser_index]["sensor_pin"])
-
-def example_callback(channel):
-    print(f"Callback triggered on channel {channel}")
-    notifications = Notifications()
-    notifications.notification(f"Callback triggered on channel {channel}", "Daily Display", "normal")
