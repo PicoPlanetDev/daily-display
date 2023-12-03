@@ -20,7 +20,7 @@ class Sensors():
 
         self.setup_sensors()
 
-        self.register_callback(11, "rising", example_callback, 200)
+        self.register_callback(0, "rising", example_callback, 200)
 
     def refresh_dispenser_data(self):
         """Refreshes the dispenser data from the database"""
