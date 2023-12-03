@@ -8,3 +8,4 @@ qrcode
 pillow
 APScheduler
 PCA9685-smbus2
+OPi.GPIO-PicoPlanetDev

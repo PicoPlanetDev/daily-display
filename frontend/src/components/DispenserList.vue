@@ -111,6 +111,7 @@
                         <span class="input-group-text">Sensor pin</span>
                         <input type="number" class="form-control" placeholder="1" aria-label="Sensor pin"
                             v-model="editDispenserForm.sensor_pin" step="1">
+                        <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-outline-danger me-2" data-bs-dismiss="modal">Cancel</button>

@@ -1,19 +1,9 @@
-# ensure that OPi.GPIO module is installed
-import os
-if not os.path.isdir('OPi_GPIO'):
-    print("Downloading OPI.GPIO module")
-    os.system('git clone https://github.com/PicoPlanetDev/OPi.GPIO.git')
-    os.system('mv OPi.GPIO/ OPi_GPIO/')
-
 from PCA9685_smbus2 import PCA9685
 import time
 from settings import Settings
 from pills import PillDatabase
 from notifications import Notifications
-
-# GPIO
-from OPi_GPIO.OPi import GPIO
-from OPi_GPIO.orangepi import zero3
+from sensors import Sensors
 
 # True limits seem to be 86 to 535
 # SERVO_MIN = 100
@@ -58,9 +48,8 @@ class Dispenser:
         self.pwm = PCA9685.PCA9685(i2c_bus, i2c_address)
         self.pwm.set_pwm_freq(50) # SG90 servos use a 50Hz PWM signal
 
-        # Set up GPIO for the sensors
-        GPIO.setmode(zero3.BOARD)
-        
+        # Set up the sensors
+        self.sensors = Sensors()
 
     def refresh_dispenser_data(self):
         """Refreshes the dispenser data from the database"""
@@ -109,9 +98,24 @@ class Dispenser:
         """        
         if not self.dispenser_enabled:
             return
+        
+        callback_function = self.dispense_pill_callback
+        self.sensors.register_callback(dispenser_index, "falling", callback_function, 500)
 
         for i in range(number_of_pills):
             self.cycle_dispenser(dispenser_index)
+
+    def dispense_pill_callback(self, dispenser_index):
+        """Callback for when a pill is dispensed from a dispenser
+
+        Args:
+            dispenser_index (int): The index of the dispenser that triggered the callback
+        """        
+        if not self.dispenser_enabled:
+            return
+        
+        self.sensors.unregister_callback(dispenser_index)
+        self.notifications.notification(f"Pill dispensed from dispenser {dispenser_index}", "Daily Display", "normal")
 
     def reset_dispenser(self, dispenser_index):
         """Resets the dispenser to the 0 degree position (closed)
@@ -126,7 +130,7 @@ class Dispenser:
 
         self.set_servo_angle(dispenser_index, angle_default)
 
-    def cycle_dispenser(self, dispenser_index):
+    def cycle_dispenser(self, dispenser_index, callback=None):
         """Cycles the dispenser to the 90 degree position (open) and back to the 0 degree position (closed)
 
         Args:
