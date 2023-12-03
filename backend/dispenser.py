@@ -112,9 +112,9 @@ class Dispenser:
         if not self.dispenser_enabled:
             return
         
-        #self.sensors.unregister_callback(dispenser_index)
         print(f"callback on {dispenser_index}")
-        self.notifications.notification(f"Pill dispensed from dispenser {dispenser_index}", "Daily Display", "normal")
+        self.notifications.notification(f"Pill dispensed from dispenser {dispenser_index}", "Daily Display", "default")
+        self.sensors.unregister_callback(dispenser_index)
 
     def reset_dispenser(self, dispenser_index):
         """Resets the dispenser to the 0 degree position (closed)
