@@ -14,8 +14,8 @@ import PillStatus from './PillStatus.vue';
                     <Version />
                 </div>
                 <div class="col">
-                    <!-- <PillWarning /> -->
-                    <PillStatus />
+                    <PillWarning />
+                    <!-- <PillStatus /> -->
                 </div>
                 <div class="col">
                     <GetButton path="/print_receipt" label="Print reciept" />

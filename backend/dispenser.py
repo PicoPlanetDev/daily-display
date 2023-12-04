@@ -118,21 +118,21 @@ class Dispenser:
         self.notifications.notification(f"Pill dispensed from dispenser {dispenser_index}", "Daily Display", "default")
         self.pill_database.set_pill_dispensed(dispenser_index)
 
-        self.sensors.unregister_callback(dispenser_index)
-        self.sensors.register_callback(dispenser_index, "both", self.take_pill_callback, 500)
+        # self.sensors.unregister_callback(dispenser_index)
+        # self.sensors.register_callback(dispenser_index, "both", self.take_pill_callback, 500)
 
-    def take_pill_callback(self, dispenser_index):
-        """Callback for when a pill is taken from a dispenser
+    # def take_pill_callback(self, dispenser_index):
+    #     """Callback for when a pill is taken from a dispenser
 
-        Args:
-            dispenser_index (int): The index of the dispenser that triggered the callback
-        """        
-        if not self.dispenser_enabled:
-            return
+    #     Args:
+    #         dispenser_index (int): The index of the dispenser that triggered the callback
+    #     """        
+    #     if not self.dispenser_enabled:
+    #         return
         
-        print(f"callback on {dispenser_index}")
-        self.notifications.notification(f"Pill taken from dispenser {dispenser_index}", "Daily Display", "default")
-        self.pill_database.set_pill_taken(dispenser_index)
+    #     print(f"callback on {dispenser_index}")
+    #     self.notifications.notification(f"Pill taken from dispenser {dispenser_index}", "Daily Display", "default")
+    #     self.pill_database.set_pill_taken(dispenser_index)
 
         self.sensors.unregister_callback(dispenser_index)
 
