@@ -260,8 +260,21 @@ class PillDatabase():
         # TODO: doesn't support multiple pills per round
         self.cur.execute("UPDATE pills SET dispensed=1 WHERE dispenser=?", (dispenser_index,))
         self.conn.commit()
+        
+        # Get the next round
+        next_round = self.get_next_round()
+        if next_round is not None:
+            # see if all the pills have been dispensed
+            self.cur.execute("SELECT COUNT(*) FROM pills WHERE round=? AND dispensed=0", (next_round["name"],))
+            result = self.cur.fetchone()
+            if result[0] == 0:
+                # set the round as taken
+                self.set_round_taken_by_name(next_round["name"], 1)
+                # send a notification
+                self.notifications = Notifications()
+                self.notifications.notification(f"Round {next_round['name']} taken", "Daily Display", "default")
     
-    def set_pill_taken(self, dispenser_index):
-        self.cur.execute("UPDATE pills SET taken=1 WHERE dispenser=?", (dispenser_index,))
-        self.conn.commit()
+    # def set_pill_taken(self, dispenser_index):
+    #     self.cur.execute("UPDATE pills SET taken=1 WHERE dispenser=?", (dispenser_index,))
+    #     self.conn.commit()
     

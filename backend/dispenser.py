@@ -100,10 +100,10 @@ class Dispenser:
         if not self.dispenser_enabled:
             return
 
-        self.sensors.register_callback(dispenser_index, "falling", self.dispense_pill_callback, 500)
+        self.sensors.register_callback(dispenser_index, "falling", self.dispense_pill_callback, 500) # register the callback for when the pill is dispensed
 
         for i in range(number_of_pills):
-            self.cycle_dispenser(dispenser_index)
+            self.cycle_dispenser(dispenser_index) # dispense as many pills as needed
 
     def dispense_pill_callback(self, dispenser_index):
         """Callback for when a pill is dispensed from a dispenser
@@ -137,7 +137,7 @@ class Dispenser:
         self.sensors.unregister_callback(dispenser_index)
 
     def reset_dispenser(self, dispenser_index):
-        """Resets the dispenser to the 0 degree position (closed)
+        """Resets the dispenser to the default angle
 
         Args:
             dispenser_index (int): The index of the dispenser to reset
@@ -145,12 +145,11 @@ class Dispenser:
         if not self.dispenser_enabled:
             return
         
-        angle_default = self.dispensers[dispenser_index]["angle_default"]
-
-        self.set_servo_angle(dispenser_index, angle_default)
+        angle_default = self.dispensers[dispenser_index]["angle_default"] # get the angle to reset to
+        self.set_servo_angle(dispenser_index, angle_default) # rotate the servo
 
     def cycle_dispenser(self, dispenser_index, callback=None):
-        """Cycles the dispenser to the 90 degree position (open) and back to the 0 degree position (closed)
+        """Cycles the dispenser to the chute angle and back to the default angle
 
         Args:
             dispenser_index (int): The index of the dispenser to cycle
@@ -160,19 +159,19 @@ class Dispenser:
         
         self.notifications.notification(f"Cycling dispenser {dispenser_index}", "Daily Display", "default", "gear")
         
-        angle_default = self.dispensers[dispenser_index]["angle_default"]
-        angle_chute = self.dispensers[dispenser_index]["angle_chute"]
-        smooth_enabled = True if self.dispensers[dispenser_index]["smooth_enabled"] == 1 else False # can this be done better?
+        angle_default = self.dispensers[dispenser_index]["angle_default"] # the servo's angle when aligned with the hopper
+        angle_chute = self.dispensers[dispenser_index]["angle_chute"] # the servo's angle when aligned with the chute
 
+        smooth_enabled = True if self.dispensers[dispenser_index]["smooth_enabled"] == 1 else False # figure out if we should use smooth angle change or not
         if smooth_enabled:
-            self.smooth_angle_change(dispenser_index, angle_default, angle_chute)
+            self.smooth_angle_change(dispenser_index, angle_default, angle_chute) # dispense, starting from default angle
             time.sleep(0.5)
-            self.smooth_angle_change(dispenser_index, angle_chute, angle_default)
+            self.smooth_angle_change(dispenser_index, angle_chute, angle_default) # return, starting from chute angle
             time.sleep(0.5)
         else:
-            self.set_servo_angle(dispenser_index, angle_default)
+            self.set_servo_angle(dispenser_index, angle_default) # reset to default just in case
             time.sleep(0.5)
-            self.set_servo_angle(dispenser_index, angle_chute)
+            self.set_servo_angle(dispenser_index, angle_chute) # dispense
             time.sleep(0.5)
-            self.set_servo_angle(dispenser_index, angle_default)
+            self.set_servo_angle(dispenser_index, angle_default) # return
             time.sleep(0.5)

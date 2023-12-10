@@ -11,14 +11,15 @@ class Sensors():
         self.config = Settings()
         self.config_dict = self.config.get_config_dict()
         self.dispenser_enabled = self.config_dict["dispenser_enabled"]
-        # Cancel if dispenser is not in use
+
+        # Cancel if dispenser is not in use, technically not necessary because this class is only used by Dispenser
         if not self.dispenser_enabled:
             return
         
         self.pill_database = PillDatabase()
         self.refresh_dispenser_data()
 
-        self.setup_sensors()
+        self.setup_sensors() # safe to do even if no sensors are enabled
 
     def refresh_dispenser_data(self):
         """Refreshes the dispenser data from the database"""
