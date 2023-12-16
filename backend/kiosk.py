@@ -15,7 +15,7 @@ class Kiosk():
     def start(self):
         chrome_options = Options()
         chrome_options.add_argument("--kiosk")
-        chrome_service = webdriver.ChromeService(executable_path='chromedriver')
+        chrome_service = webdriver.ChromeService(executable_path='/usr/bin/chromedriver')
 
         self.driver = webdriver.Chrome(service=chrome_service, options=chrome_options)
         self.driver.get("http://localhost:5173")
