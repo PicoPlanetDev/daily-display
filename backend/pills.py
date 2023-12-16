@@ -278,3 +278,23 @@ class PillDatabase():
     #     self.cur.execute("UPDATE pills SET taken=1 WHERE dispenser=?", (dispenser_index,))
     #     self.conn.commit()
     
+    def get_pill(self, dispenser_index):
+        """Gets the pill from the database that is dispensed by the specified dispenser
+
+        Args:
+            dispenser_index (int): The dispenser index to get the pill for
+
+        Returns:
+            dict: The pill
+        """
+        self.cur.execute("SELECT * FROM pills WHERE dispenser=?", (dispenser_index,))
+        result = self.cur.fetchone()
+        return {
+            "id": result[0],
+            "name": result[1],
+            "round": result[2],
+            "number": result[3],
+            "dispenser": result[4],
+            "dispensed": result[5],
+            "taken": result[6]
+        }

@@ -115,7 +115,7 @@ class Dispenser:
             return
         
         print(f"callback on {sensor_pin}")
-        self.notifications.notification(f"Callback from sensor on pin {sensor_pin}", "Daily Display", "default")
+        # self.notifications.notification(f"Callback from sensor on pin {sensor_pin}", "Daily Display", "default")
 
         # determine which dispenser was triggered
         dispenser_index = None
@@ -123,8 +123,12 @@ class Dispenser:
             if dispenser["sensor_pin"] == sensor_pin:
                 dispenser_index = dispenser["index"]
                 break
-        self.notifications.notification(f"Pill dispensed from dispenser {dispenser_index}", "Daily Display", "default")
+        # self.notifications.notification(f"Pill dispensed from dispenser {dispenser_index}", "Daily Display", "default")
         self.pill_database.set_pill_dispensed(dispenser_index)
+
+        # Figure out the pill that was dispensed
+        pill = self.pill_database.get_pill(dispenser_index)
+        self.notifications.notification(f"{pill['name']} dispensed", title="Pill dispensed", priority="default", tags="pill")
 
         self.sensors.unregister_callback(dispenser_index)
         # self.sensors.register_callback(dispenser_index, "both", self.take_pill_callback, 500)
@@ -165,7 +169,7 @@ class Dispenser:
         if not self.dispenser_enabled:
             return
         
-        self.notifications.notification(f"Cycling dispenser {dispenser_index}", "Daily Display", "default", "gear")
+        # self.notifications.notification(f"Cycling dispenser {dispenser_index}", "Daily Display", "default", "gear")
         
         angle_default = self.dispensers[dispenser_index]["angle_default"] # the servo's angle when aligned with the hopper
         angle_chute = self.dispensers[dispenser_index]["angle_chute"] # the servo's angle when aligned with the chute

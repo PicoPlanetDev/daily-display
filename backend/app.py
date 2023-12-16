@@ -66,7 +66,7 @@ def handle_round(round_name):
     for pill in pills:
         if round_name in pill['round']:
             dispenser.dispense_pill(pill['dispenser'], pill['number'])
-            notifications.notification(f"{pill['name']} dispensed", title="Pill dispensed", priority="default", tags="pill")
+            # notifications.notification(f"{pill['name']} dispensed", title="Pill dispensed", priority="default", tags="pill")
 
     # Mark round as taken
     pill_database.set_round_taken_by_name(round_name, 1)
@@ -223,7 +223,7 @@ def pills():
             }
             return jsonify(response)
         else:
-            notifications.notification(f"{data['name']} added", title="New pill added", priority="default", tags="pill")
+            notifications.notification(f"{data['name']} added", title="New pill added", priority="high", tags="pill")
             response = {
                 "status": "success",
             }
@@ -247,7 +247,7 @@ def pills():
             }
             return jsonify(response)
         else:
-            notifications.notification(f"{data['name']} edited", title="Pill edited", priority="default", tags="pill")
+            notifications.notification(f"{data['name']} edited", title="Pill edited", priority="low", tags="pill")
             response = {
                 "status": "success",
             }
@@ -265,7 +265,7 @@ def pills():
             }
             return jsonify(response)
         else:
-            notifications.notification(f"{data['name']} deleted", title="Pill deleted", priority="default", tags="pill")
+            notifications.notification(f"{data['name']} deleted", title="Pill deleted", priority="high", tags="pill")
             response = {
                 "status": "success",
             }
@@ -304,7 +304,7 @@ def rounds():
             return jsonify(response)
         else:
             schedule_rounds()
-            notifications.notification(f"{data['name']} added", title="New round added", priority="default", tags="clock4")
+            notifications.notification(f"{data['name']} added", title="New round added", priority="high", tags="clock4")
             response = {
                 "status": "success",
             }
@@ -327,7 +327,7 @@ def rounds():
             return jsonify(response)
         else:
             schedule_rounds()
-            notifications.notification(f"{data['name']} edited", title="Round edited", priority="default", tags="clock4")
+            notifications.notification(f"{data['name']} edited", title="Round edited", priority="low", tags="clock4")
             response = {
                 "status": "success",
             }
@@ -492,5 +492,5 @@ def print_calendar():
     printer.print_calendar(calendar_events, date)
 
 if __name__ == '__main__':
-    notifications.notification("Daily Display is starting up", title="Backend started", priority="default", tags="rocket")
+    notifications.notification("Daily Display is starting up", title="Backend started", priority="low", tags="rocket")
     app.run(debug=True, host='0.0.0.0')
