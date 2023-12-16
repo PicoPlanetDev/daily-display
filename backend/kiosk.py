@@ -1,6 +1,7 @@
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 import settings
+import os
 
 # Creates a chromium kiosk window to display the web interface
 class Kiosk():
@@ -14,6 +15,7 @@ class Kiosk():
     def start(self):
         chrome_options = Options()
         chrome_options.add_argument("--kiosk")
+        os.environ["webdriver.chrome.driver"] = "/usr/bin/chromedriver"
 
         self.driver = webdriver.Chrome(options=chrome_options)
         self.driver.get("http://localhost:5173")
