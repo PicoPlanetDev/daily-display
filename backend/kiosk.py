@@ -18,10 +18,10 @@ class Kiosk():
         chrome_options.add_argument("--no-sandbox")
 
         # Set display to 0 if it's not set
-        if not os.environ.get("DISPLAY"):
-            os.environ["DISPLAY"] = ":0"
+        # if not os.environ.get("DISPLAY"):
+        #     os.environ["DISPLAY"] = ":0"
 
-        chrome_service = webdriver.ChromeService(executable_path='/usr/bin/chromedriver')
+        chrome_service = webdriver.ChromeService(executable_path='/usr/bin/chromedriver', env={"DISPLAY": ":0"})
 
         self.driver = webdriver.Chrome(service=chrome_service, options=chrome_options)
         self.driver.get("http://localhost:5173")
