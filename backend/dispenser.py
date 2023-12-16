@@ -105,20 +105,28 @@ class Dispenser:
         for i in range(number_of_pills):
             self.cycle_dispenser(dispenser_index) # dispense as many pills as needed
 
-    def dispense_pill_callback(self, dispenser_index):
+    def dispense_pill_callback(self, sensor_pin):
         """Callback for when a pill is dispensed from a dispenser
 
         Args:
-            dispenser_index (int): The index of the dispenser that triggered the callback
+            sensor_pin (int): The index of the dispenser that triggered the callback
         """        
         if not self.dispenser_enabled:
             return
         
-        print(f"callback on {dispenser_index}")
+        print(f"callback on {sensor_pin}")
+        self.notifications.notification(f"Callback from sensor on pin {sensor_pin}", "Daily Display", "default")
+
+        # determine which dispenser was triggered
+        dispenser_index = None
+        for dispenser in self.dispensers:
+            if dispenser["sensor_pin"] == sensor_pin:
+                dispenser_index = dispenser["index"]
+                break
         self.notifications.notification(f"Pill dispensed from dispenser {dispenser_index}", "Daily Display", "default")
         self.pill_database.set_pill_dispensed(dispenser_index)
 
-        # self.sensors.unregister_callback(dispenser_index)
+        self.sensors.unregister_callback(dispenser_index)
         # self.sensors.register_callback(dispenser_index, "both", self.take_pill_callback, 500)
 
     # def take_pill_callback(self, dispenser_index):
@@ -134,7 +142,7 @@ class Dispenser:
     #     self.notifications.notification(f"Pill taken from dispenser {dispenser_index}", "Daily Display", "default")
     #     self.pill_database.set_pill_taken(dispenser_index)
 
-        self.sensors.unregister_callback(dispenser_index)
+        # self.sensors.unregister_callback(sensor_pin)
 
     def reset_dispenser(self, dispenser_index):
         """Resets the dispenser to the default angle
