@@ -15,6 +15,7 @@ class Kiosk():
     def start(self):
         chrome_options = Options()
         chrome_options.add_argument("--kiosk")
+        chrome_options.add_argument("--no-sandbox")
 
         # Set display to 0 if it's not set
         if not os.environ.get("DISPLAY"):
