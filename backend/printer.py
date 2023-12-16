@@ -55,7 +55,7 @@ class Printer:
         self.printer.justify('L')
         for event in calendar:
             print(event)
-            line = f"{event['time_string']} - {event['title']})"
+            line = f"{event['time_string']} - {event['title']}"
             if event['type'] == "Task":
                 line = f"[ ] {line}"
             else:
