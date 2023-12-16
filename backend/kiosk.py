@@ -17,11 +17,10 @@ class Kiosk():
         chrome_options.add_argument("--kiosk")
         chrome_options.add_argument("--no-sandbox")
 
-        # Set display to 0 if it's not set
-        # if not os.environ.get("DISPLAY"):
-        #     os.environ["DISPLAY"] = ":0"
+        # Set display to 0 so chromium can display on the screen
+        os.environ["DISPLAY"] = ":0"
 
-        chrome_service = webdriver.ChromeService(executable_path='/usr/bin/chromedriver', env={"DISPLAY": ":0"})
+        chrome_service = webdriver.ChromeService(executable_path='/usr/bin/chromedriver', env=os.environ)
 
         self.driver = webdriver.Chrome(service=chrome_service, options=chrome_options)
         self.driver.get("http://localhost:5173")
