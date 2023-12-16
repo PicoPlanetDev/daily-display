@@ -62,6 +62,37 @@ source venv/bin/activate
 pip3 install -r requirements.txt
 ```
 
-**To run Daily Display on boot:**
-1. Copy `daily-display-backend.service` and `daily-display-frontend.service` into the `/etc/systemd/system` directory
-2. Run `sudo systemctl enable daily-display-backend.service` and `sudo systemctl enable daily-display-frontend.service`
+#### To run Daily Display on boot:
+1. Copy `daily-display-backend.service` and `daily-display-frontend.service` into the `/etc/systemd/system` directory:
+```bash
+cd daily-display
+cp daily-display-backend.service /etc/systemd/system/.
+cp daily-display-frontend.service /etc/systemd/system/.
+```
+2. Reload the systemctl daemon:
+```bash
+sudo systemctl daemon-reload
+```
+3. Enable both services to run at boot:
+```bash
+sudo systemctl enable daily-display-backend.service
+sudo systemctl enable daily-display-frontend.service
+```
+**This only enables the Daily Display software and web interface server.** To also automatically open
+a fullscreen browser window, follow the below instructions.
+
+#### To automatically start Chromium in kiosk mode:
+1. Identify your operating system's application autostart feature. This tutorial will show the process for an Orange Pi Zero 3 running Debian 12 "bookworm" with the Xfce desktop environment.
+![Settings menu depicting the hierarchy to the Session and Startup entry](screenshots/session-startup-annotated.png)
+
+2. Launch the Application Autostart manager. For me, it was located under `Settings -> Session and Startup` on the **Application Autostart** tab.
+![Screenshot showing the Application Autostart tab and Add button](screenshots/application-autostart-annotated.png)
+
+3. Create a new entry by clicking the <kbd>+ Add</kbd> button, then fill in name and description however you like.
+4. Fill the command input box with the following command:
+```bash
+chromium http://localhost:5173 --kiosk
+```
+![Screenshot showing example values for the add application box](screenshots/add-application-annotated.png)
+
+5. Finally, click <kbd>OK</kbd> and restart the computer, ensuring that Chromium launches in fullscreen to the correct address after the computer boots up.
