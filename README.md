@@ -1,5 +1,7 @@
 # daily-display
 
+This readme is a work in progress.
+
 ## Overview
 
 Designed to be displayed on a wall-mounted screen, Daily Display combines a today's tasks 
