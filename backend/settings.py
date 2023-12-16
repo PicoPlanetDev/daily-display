@@ -33,6 +33,9 @@ class Settings():
         self.config.add_section("Dispenser")
         self.config.set("Dispenser", "dispenser_enabled", "true")
         self.config.set("Dispenser", "manual_dispense_time", "60")
+
+        self.config.add_section("Kiosk")
+        self.config.set("Kiosk", "kiosk_enabled", "true")
         
         with open(self.path, "w") as config_file:
             self.config.write(config_file)
@@ -51,7 +54,8 @@ class Settings():
             "printer_baudrate": self.config.getint("Printer", "printer_baudrate"),
             "dispenser_enabled": self.config.getboolean("Dispenser", "dispenser_enabled"),
             "receipt_rounds": self.config.get("Printer", "receipt_rounds"),
-            "manual_dispense": self.config.getint("Dispenser", "manual_dispense_time")
+            "manual_dispense": self.config.getint("Dispenser", "manual_dispense_time"),
+            "kiosk_enabled": self.config.getboolean("Kiosk", "kiosk_enabled")
         }
     
     def update_config(self, dictionary):
@@ -69,6 +73,7 @@ class Settings():
             self.config.set("Dispenser", "dispenser_enabled", "true" if dictionary["dispenser_enabled"] else "false")
             self.config.set("Printer", "receipt_rounds", dictionary["receipt_rounds"])
             self.config.set("Dispenser", "manual_dispense_time", str(dictionary["manual_dispense"]))
+            self.config.set("Kiosk", "kiosk_enabled", "true" if dictionary["kiosk_enabled"] else "false")
         except KeyError as e:
             print("KeyError: {}".format(e))
             return False

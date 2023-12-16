@@ -118,6 +118,13 @@
                 </div>
             </div>
         </div>
+        <!-- Kiosk -->
+        <div class="fs-4"><i class="bi bi-display"></i> Kiosk</div>
+        <hr>
+        <div class="form-check form-switch mb-3">
+            <input class="form-check-input" type="checkbox" role="switch" id="kioskCheck" v-model="kioskEnabled">
+            <label class="form-check-label" for="kioskCheck">Kiosk enabled</label>
+        </div>
         <!-- Exit and save buttons -->
         <hr>
         <div class="mb-3">
@@ -159,7 +166,8 @@ export default {
             timezone: '',
             controlDispensers: {
                 index: 0,
-            }
+            },
+            kioskEnabled: true,
         };
     },
     methods: {
@@ -179,6 +187,7 @@ export default {
                     this.receiptRounds = response.data.settings.receipt_rounds;
                     this.manualDispense = response.data.settings.manual_dispense;
                     this.timezone = response.data.settings.timezone;
+                    this.kioskEnabled = response.data.settings.kiosk_enabled;
 
                     this.scrollToTop();
                 })
@@ -199,6 +208,7 @@ export default {
                 receipt_rounds: this.receiptRounds,
                 manual_dispense: this.manualDispense,
                 timezone: this.timezone,
+                kiosk_enabled: this.kioskEnabled,
             })
                 .then(response => {
                     console.log(response);

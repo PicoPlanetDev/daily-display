@@ -4,7 +4,6 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 from calendar_helper import Calendar
 from settings import Settings
-import requests
 from notifications import Notifications
 from pills import PillDatabase
 from printer import Printer
@@ -16,6 +15,7 @@ from apscheduler.schedulers.background import BackgroundScheduler
 from dispenser import Dispenser
 from tzlocal import get_localzone
 from datetime import datetime, timedelta
+from kiosk import Kiosk
 
 tz = get_localzone()
 scheduler = BackgroundScheduler(timezone=tz)
@@ -31,6 +31,7 @@ notifications = Notifications()
 pill_database = PillDatabase()
 printer = Printer()
 dispenser = Dispenser(i2c_bus=3, i2c_address=0x40)
+kiosk = Kiosk()
 
 def schedule_rounds():
     for round in pill_database.get_rounds():
