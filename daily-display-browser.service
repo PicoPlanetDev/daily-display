@@ -1,0 +1,11 @@
+[Unit]
+Description=Daily Display Kiosk Browser
+After=graphical-session.target
+
+[Service]
+Environment=DISPLAY=:0
+ExecStart=chromium http://localhost:5173 --kiosk --no-sandbox
+Type=forking
+
+[Install]
+WantedBy=multi-user.target
