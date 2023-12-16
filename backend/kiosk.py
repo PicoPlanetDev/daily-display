@@ -15,6 +15,11 @@ class Kiosk():
     def start(self):
         chrome_options = Options()
         chrome_options.add_argument("--kiosk")
+
+        # Set display to 0 if it's not set
+        if not os.environ.get("DISPLAY"):
+            os.environ["DISPLAY"] = ":0"
+
         chrome_service = webdriver.ChromeService(executable_path='/usr/bin/chromedriver')
 
         self.driver = webdriver.Chrome(service=chrome_service, options=chrome_options)
