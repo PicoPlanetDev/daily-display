@@ -255,6 +255,26 @@ class PillDatabase():
         result = self.cur.fetchone()
         return True if result[0] == 1 else False
     
+    def set_round_not_dispensed(self, round_name: str):
+        """Sets all the pills in the specified round to not dispensed
+
+        Args:
+            round_name (str): The name of the round to set to not dispensed
+        """        
+        # Maybe a sketchy way to handle the round_name being only one of potentially multiple rounds
+        # Split the round_name parameter into individual rounds
+        rounds = round_name.split(',')
+
+        # Create a parameter placeholder for each round
+        placeholders = ', '.join('?' for round in rounds)
+
+        # Create the SQL query
+        query = f"UPDATE pills SET dispensed=0 WHERE round IN ({placeholders})"
+
+        # Execute the SQL query with the rounds as parameters
+        self.cur.execute(query, rounds)
+        self.conn.commit()
+
     # Pill dispensed and taken
     def set_pill_dispensed(self, dispenser_index):
         # TODO: doesn't support multiple pills per round

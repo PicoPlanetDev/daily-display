@@ -60,6 +60,9 @@ def schedule_rounds():
 def handle_round(round_name):
     print(f"Handling round {round_name}")
 
+    # Set all pills to not be dispensed
+    pill_database.set_round_not_dispensed(round_name)
+
     # Handle pill dispense
     pills = pill_database.get_pills()
     for pill in pills:
