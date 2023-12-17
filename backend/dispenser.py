@@ -171,6 +171,8 @@ class Dispenser:
         
         # self.notifications.notification(f"Cycling dispenser {dispenser_index}", "Daily Display", "default", "gear")
         
+        self.sensors.register_callback(dispenser_index, "falling", self.dispense_pill_callback, 500) # register the callback for when the pill is dispensed
+
         angle_default = self.dispensers[dispenser_index]["angle_default"] # the servo's angle when aligned with the hopper
         angle_chute = self.dispensers[dispenser_index]["angle_chute"] # the servo's angle when aligned with the chute
 

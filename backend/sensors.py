@@ -68,5 +68,5 @@ class Sensors():
         Args:
             dispenser_index (int): The index of the dispenser to unregister the callback for
         """
-        GPIO.remove_event_detect(self.dispensers[dispenser_index]["sensor_pin"])
         print(f"Removed callback for dispenser {dispenser_index}")
+        GPIO.remove_event_detect(self.dispensers[dispenser_index]["sensor_pin"])
