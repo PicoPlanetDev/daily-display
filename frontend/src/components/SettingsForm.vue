@@ -77,10 +77,12 @@
             <div class="input-group mb-3" id="printMessageGroup">
                 <div class="form-floating">
                     <input type="text" class="form-control" placeholder="Your message" id="printMessageInput"
-                        aria-label="Enter your message here" v-model="printMessageText">
+                        aria-label="Enter your message here" v-model="printMessageText"
+                        :disabled="printerEnabled ? false : true">
                     <label class="text-body-secondary" for="printMessageInput">Your message</label>
                 </div>
-                <button class="btn btn-outline-secondary" type="button" id="printMessageButton" @click="printMessage">
+                <button class="btn btn-outline-secondary" type="button" id="printMessageButton" @click="printMessage"
+                    :disabled="printerEnabled ? false : true">
                     <i class="bi bi-printer"></i> Print
                 </button>
             </div>
