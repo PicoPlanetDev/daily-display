@@ -9,7 +9,7 @@
         </div>
         <div>
             <div class="mt-3" v-if="dispensers.length == 0">
-                No dispensers found. Click the button above to create one, or try refreshing the list.
+                No dispensers found. Try refreshing the list.
                 <hr>
             </div>
             <div class="table-responsive">
