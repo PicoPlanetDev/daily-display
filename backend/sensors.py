@@ -50,6 +50,8 @@ class Sensors():
             function (function): The function to call when the callback is triggered
             debounce (int): The debounce time in milliseconds
         """
+        print(f"Registering callback for dispenser {dispenser_index}")
+
         match edge:
             case "rising":
                 trigger = GPIO.RISING
@@ -68,5 +70,5 @@ class Sensors():
         Args:
             dispenser_index (int): The index of the dispenser to unregister the callback for
         """
-        print(f"Removed callback for dispenser {dispenser_index}")
+        print(f"Removing callback for dispenser {dispenser_index}")
         GPIO.remove_event_detect(self.dispensers[dispenser_index]["sensor_pin"])
