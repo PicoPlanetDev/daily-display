@@ -72,7 +72,7 @@ class Printer:
         self.check_paper()
 
     def end(self):
-        self.printer.feed(5)
+        self.printer.feed(3)
         self.printer.sleep()
         self.printer.wake()
         self.printer.setDefault()
