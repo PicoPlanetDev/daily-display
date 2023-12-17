@@ -22,7 +22,6 @@ import PillStatus from './PillStatus.vue';
                     <GetButton path="/feed_printer" label="Feed printer" />
                     <GetButton path="/print_qr" label="Print QR" />
                     <GetButton path="/mark_round_taken" label="Mark round taken" />
-                    <GetButton path="/shutdown" label="Shutdown" />
                     <RouterLink to="/settings" class="btn btn-outline-secondary btn-sm float-end">Settings</RouterLink>
                 </div>
             </div>
