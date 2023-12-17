@@ -7,6 +7,6 @@ echo "Updating Daily Display..." # log
 su orangepi -c "git pull"
 
 # Restart the services
-echo "Restarting services..." # log
-systemctl restart daily-display-frontend.service
-systemctl restart daily-display-backend.service
+# echo "Restarting services..." # log
+# systemctl restart daily-display-frontend.service
+# systemctl restart daily-display-backend.service
