@@ -132,31 +132,31 @@ class Dispenser:
 
         self.sensors.unregister_callback(dispenser_index)
         
-        self.sensors.register_callback(dispenser_index, "both", self.take_pill_callback, 500)
+    #     self.sensors.register_callback(dispenser_index, "both", self.take_pill_callback, 500)
 
-    def take_pill_callback(self, sensor_pin):
-        """Callback for when a hand removes a pill from a dispenser
+    # def take_pill_callback(self, sensor_pin):
+    #     """Callback for when a hand removes a pill from a dispenser
 
-        Args:
-            sensor_pin (int): The index of the dispenser that triggered the callback
-        """          
-        if not self.dispenser_enabled:
-            return
+    #     Args:
+    #         sensor_pin (int): The index of the dispenser that triggered the callback
+    #     """          
+    #     if not self.dispenser_enabled:
+    #         return
         
-        print(f"callback on {sensor_pin}")
+    #     print(f"callback on {sensor_pin}")
         
-        # determine which dispenser was triggered
-        dispenser_index = None
-        for dispenser in self.dispensers:
-            if dispenser["sensor_pin"] == sensor_pin:
-                dispenser_index = dispenser["index"]
-                break
+    #     # determine which dispenser was triggered
+    #     dispenser_index = None
+    #     for dispenser in self.dispensers:
+    #         if dispenser["sensor_pin"] == sensor_pin:
+    #             dispenser_index = dispenser["index"]
+    #             break
 
-        # Figure out the pill that was dispensed
-        pill = self.pill_database.get_pill(dispenser_index)
-        self.notifications.notification(f"{pill['name']} taken", title="Pill taken", priority="default", tags="pill")
+    #     # Figure out the pill that was dispensed
+    #     pill = self.pill_database.get_pill(dispenser_index)
+    #     self.notifications.notification(f"{pill['name']} taken", title="Pill taken", priority="default", tags="pill")
 
-        self.sensors.unregister_callback(dispenser_index)
+    #     self.sensors.unregister_callback(dispenser_index)
 
     def reset_dispenser(self, dispenser_index):
         """Resets the dispenser to the default angle
