@@ -5,10 +5,10 @@ class Settings():
         self.path = path
         self.config = configparser.ConfigParser(interpolation=None, allow_no_value=True)
         # If config file exists, read it
-        if self.config.read(path):
-            print("Config file found")
+        if not self.config.read(path):
+            # print("Config file found")
         # Else, create it
-        else:
+        # else:
             print("Config file not found")
             self.create_config()
 
