@@ -296,6 +296,9 @@ export default {
                         this.alertMessage = "Message printed successfully";
                         this.alertStyle = "alert-success";
                         this.showAlert = true;
+
+                        // Clear the message
+                        this.printMessageText = "";
                     }
                     else {
                         this.alertMessage = "Error printing message";
@@ -305,7 +308,12 @@ export default {
                 })
                 .catch(error => {
                     console.log(error);
+
+                    this.alertMessage = "Error printing message";
+                    this.alertStyle = "alert-danger";
+                    this.showAlert = true;
                 });
+            this.scrollToTop();
         }
     },
     computed: {
