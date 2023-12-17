@@ -100,11 +100,10 @@ class Printer:
         self.printer.underlineOn()
         self.printer.println("New Message")
         self.printer.underlineOff()
-        self.printer.setSize('M')
+        self.printer.setSize('S')
         self.printer.println(f"At {time}:")
 
         # Print the message itself
-        self.printer.setSize('S')
         self.printer.justify('L')
         self.printer.println(message)
         self.end()
