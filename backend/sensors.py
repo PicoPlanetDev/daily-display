@@ -1,6 +1,6 @@
 from pills import PillDatabase
 from settings import Settings
-from notifications import Notifications
+import threading
 
 import OPi.GPIO as GPIO
 import orangepi.zero3
@@ -71,4 +71,8 @@ class Sensors():
             dispenser_index (int): The index of the dispenser to unregister the callback for
         """
         print(f"Removing callback for dispenser {dispenser_index}")
-        GPIO.remove_event_detect(self.dispensers[dispenser_index]["sensor_pin"])
+
+        # Make a new thread to unregister the callback
+        thread = threading.Thread(target=lambda:GPIO.remove_event_detect(self.dispensers[dispenser_index]["sensor_pin"]))
+        thread.start()
+        #GPIO.remove_event_detect(self.dispensers[dispenser_index]["sensor_pin"])
