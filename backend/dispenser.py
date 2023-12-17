@@ -160,7 +160,7 @@ class Dispenser:
         angle_default = self.dispensers[dispenser_index]["angle_default"] # get the angle to reset to
         self.set_servo_angle(dispenser_index, angle_default) # rotate the servo
 
-    def cycle_dispenser(self, dispenser_index, callback=None):
+    def cycle_dispenser(self, dispenser_index):
         """Cycles the dispenser to the chute angle and back to the default angle
 
         Args:
@@ -171,7 +171,7 @@ class Dispenser:
         
         # self.notifications.notification(f"Cycling dispenser {dispenser_index}", "Daily Display", "default", "gear")
         
-        self.sensors.register_callback(dispenser_index, "falling", self.dispense_pill_callback, 500) # register the callback for when the pill is dispensed
+        # self.sensors.register_callback(dispenser_index, "falling", self.dispense_pill_callback, 500) # register the callback for when the pill is dispensed
 
         angle_default = self.dispensers[dispenser_index]["angle_default"] # the servo's angle when aligned with the hopper
         angle_chute = self.dispensers[dispenser_index]["angle_chute"] # the servo's angle when aligned with the chute

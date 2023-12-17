@@ -75,8 +75,3 @@ class Sensors():
         # Make a new thread to unregister the callback - this might be a bad idea
         thread = threading.Thread(target=lambda:GPIO.remove_event_detect(self.dispensers[dispenser_index]["sensor_pin"]))
         thread.start()
-        # wait for the thread to finish
-        while thread.is_alive():
-            pass
-        print("Thread finished")
-        #GPIO.remove_event_detect(self.dispensers[dispenser_index]["sensor_pin"])
