@@ -471,7 +471,8 @@ def cycle_dispenser():
         response = {
             "status": "success",
         }
-    except:
+    except Exception as e:
+        print(e)
         response = {
             "status": "error",
         }
