@@ -1,4 +1,5 @@
 <script setup>
+import DangerZone from '../components/DangerZone.vue';
 import DispenserList from '../components/DispenserList.vue';
 import PillList from '../components/PillList.vue';
 import RoundList from '../components/RoundList.vue';
@@ -14,8 +15,15 @@ import SettingsForm from '../components/SettingsForm.vue';
     <div class="fs-2"><i class="bi bi-capsule-pill"></i> Pill Dispenser</div>
     <div class="lead">These settings apply immediately</div>
     <hr>
+    <!-- Database editors -->
     <PillList />
     <RoundList />
     <DispenserList />
+    <!-- Danger zone -->
+    <!-- <div class="border rounded border-danger-subtle bg-danger-subtle"> -->
+    <div class="fs-2 text-danger-emphasis"><i class="bi bi-exclamation-triangle-fill"></i> Danger Zone</div>
+    <hr>
+    <DangerZone />
+    <!-- </div> -->
   </div>
 </template>

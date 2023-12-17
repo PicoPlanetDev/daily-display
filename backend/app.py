@@ -481,9 +481,25 @@ def cycle_dispenser():
         }
     return jsonify(response)
 
-@app.route('/api/shutdown', methods=['GET'])
+@app.route('/api/shutdown', methods=['POST'])
 def shutdown():
-    os.system("shutdown -h now")
+    # determine shutdown type
+    data = request.get_json()
+
+    # execute the requested shutdown command
+    if data['type'] == "poweroff":
+        os.system("shutdown --poweroff now")
+    elif data['type'] == "reboot":
+        os.system("shutdown --reboot now")
+    response = {
+        "status": "success",
+    }
+    return jsonify(response)
+
+@app.route('/api/update', methods=['POST'])
+def update():
+    # execute the update command
+    os.system("./update.sh")
     response = {
         "status": "success",
     }
