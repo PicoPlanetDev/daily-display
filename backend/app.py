@@ -505,6 +505,21 @@ def update():
     }
     return jsonify(response)
 
+@app.route('/api/print_message', methods=['POST'])
+def print_message():
+    data = request.get_json()
+    success = printer.print_message(data['message'], calendar.get_time())
+    
+    if success:
+        response = {
+            "status": "success",
+        }
+    else:
+        response = {
+            "status": "error",
+        }
+    return jsonify(response)
+
 def print_calendar():
     date = calendar.get_date()
     calendar_events = calendar.get_events_list(calendar.get_today(), calendar.get_today() + timedelta(days=1))

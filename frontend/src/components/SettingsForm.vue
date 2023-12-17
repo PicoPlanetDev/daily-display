@@ -72,6 +72,19 @@
                 <span class="font-monospace">Morning,Lunch</span>
             </div>
         </div>
+        <div class="mb-3 col-lg-6">
+            <label for="printMessageGroup" class="form-label">Print message</label>
+            <div class="input-group mb-3" id="printMessageGroup">
+                <div class="form-floating">
+                    <input type="text" class="form-control" placeholder="Your message" id="printMessageInput"
+                        aria-label="Enter your message here" v-model="printMessageText">
+                    <label class="text-body-secondary" for="printMessageInput">Your message</label>
+                </div>
+                <button class="btn btn-outline-secondary" type="button" id="printMessageButton" @click="printMessage">
+                    <i class="bi bi-printer"></i> Print
+                </button>
+            </div>
+        </div>
         <!-- Dispenser -->
         <div class="fs-4"><i class="bi bi-capsule"></i> Pill dispensing</div>
         <hr>
@@ -160,6 +173,7 @@ export default {
             controlDispensers: {
                 index: 0,
             },
+            printMessageText: '',
         };
     },
     methods: {
@@ -263,6 +277,28 @@ export default {
                     }
                     else {
                         this.alertMessage = "Error cycling dispenser";
+                        this.alertStyle = "alert-danger";
+                        this.showAlert = true;
+                    }
+                })
+                .catch(error => {
+                    console.log(error);
+                });
+        },
+        printMessage() {
+            const path = '/print_message';
+            axios.post(path, {
+                message: this.printMessageText,
+            })
+                .then(response => {
+                    console.log(response);
+                    if (response.data.status == "success") {
+                        this.alertMessage = "Message printed successfully";
+                        this.alertStyle = "alert-success";
+                        this.showAlert = true;
+                    }
+                    else {
+                        this.alertMessage = "Error printing message";
                         this.alertStyle = "alert-danger";
                         this.showAlert = true;
                     }

@@ -88,3 +88,28 @@ class Printer:
         self.printer.println(link)
         self.printer.printImage(qr)
         self.end()
+
+    def print_message(self, message, time):
+        if not self.printer_enabled:
+            return False # don't print if the printer is disabled
+
+        self.start()
+        # Print a heading
+        self.printer.setSize('L')
+        self.printer.justify('C')
+        self.printer.underlineOn()
+        self.printer.println("New Message")
+        self.printer.underlineOff()
+        self.printer.setSize('M')
+        self.printer.println(f"At {time}")
+        
+        # Feed a blank line
+        self.printer.println()
+
+        # Print the message itself
+        self.printer.setSize('S')
+        self.printer.justify('L')
+        self.printer.println(message)
+        self.end()
+
+        return True # success
