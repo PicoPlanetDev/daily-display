@@ -28,7 +28,13 @@ def map_range(value, inMin, inMax, outMin, outMax):
     return outMin + (((value - inMin) / (inMax - inMin)) * (outMax - outMin))
 
 class Dispenser:
-    def __init__(self, i2c_bus, i2c_address):
+    def __init__(self, i2c_bus: int, i2c_address: int):
+        """Initializes the dispenser motor driver (if enabled) and sets up the sensors
+
+        Args:
+            i2c_bus (int): The I2C bus that the PCA9685 is connected to
+            i2c_address (int): The I2C address of the PCA9685
+        """
         # Set up settings
         self.config = Settings()
         self.config_dict = self.config.get_config_dict()

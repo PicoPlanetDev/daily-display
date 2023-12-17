@@ -1,4 +1,5 @@
 # ensure that the thermal printer module is installed
+# TODO: publish this to PyPi so it can be installed with pip
 import os
 if not os.path.isfile('Adafruit_Thermal.py'):
     print("Downloading Adafruit Thermal Printer module")

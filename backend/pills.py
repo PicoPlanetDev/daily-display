@@ -292,7 +292,7 @@ class PillDatabase():
                 self.set_round_taken_by_name(next_round["name"], 1)
                 # send a notification
                 self.notifications = Notifications()
-                self.notifications.notification(f"Round {next_round['name']} taken", "Daily Display", "default")
+                self.notifications.notification(f"Round {next_round['name']} successfully dispensed", "Daily Display", "default")
     
     # def set_pill_taken(self, dispenser_index):
     #     self.cur.execute("UPDATE pills SET taken=1 WHERE dispenser=?", (dispenser_index,))

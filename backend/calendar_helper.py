@@ -5,13 +5,30 @@ from settings import Settings
 import pytz
 
 def pluralize(string, count):
+    """Automatically adds an 's' to the end of a string if the count is not 1
+
+    Args:
+        string (str): The string to pluralize
+        count (int): The count to use (1 or anything else)
+
+    Returns:
+        str: The pluralized string
+    """
     if count == 1:
         return string
     else:
         return string + "s"
 
 def format_time_until(time_until):
-    print(f"time_until: {time_until}")
+    """Return a friendly string of the time until the event
+
+    Args:
+        time_until (datetime): Time until the event
+
+    Returns:
+        str: The formatted string of the time until the event
+    """
+    # print(f"time_until: {time_until}")
     time_until_formatted = ""
     if time_until.days > 0:
         time_until_formatted = str(time_until.days) + pluralize(" day", time_until.days)
@@ -30,10 +47,20 @@ class Calendar():
         self.timezone = pytz.timezone(self.settings.get_config_dict()["timezone"])
 
     def get_today(self):
+        """Return a datetime object of today at midnight
+
+        Returns:
+            datetime: Datetime object of today at midnight
+        """        
         # return a datetime object of today at midnight
         return self.timezone.localize(datetime.utcnow().replace(hour=0, minute=0, second=0, microsecond=0))
 
     def get_url(self):
+        """Return the calendar url from the config
+
+        Returns:
+            str: Calendar url
+        """
         return self.settings.config.get("Calendar", "calendar_url")
 
     # These are the same function but with different defaults (stupid)
@@ -60,6 +87,15 @@ class Calendar():
         return datetime.now(tz=self.timezone).strftime(format)
     
     def get_events_dict(self, start_date: datetime, end_date: datetime):
+        """Return a dictionary of events from the calendar between the specified dates
+
+        Args:
+            start_date (datetime): Start date of events
+            end_date (datetime): End date of events
+        
+        Returns:
+            dict: Dictionary of events
+        """
         events_list = self.get_events_list(start_date, end_date)
 
         # convert to dict with keys as uid
@@ -70,6 +106,15 @@ class Calendar():
         return events_dict
     
     def get_events_list(self, start_date: datetime, end_date: datetime):
+        """Return a list of events from the calendar between the specified dates
+
+        Args:
+            start_date (datetime): Start date of events
+            end_date (datetime): End date of events
+        
+        Returns:
+            list: List of events
+        """
         # update the url
         self.url = self.get_url()
 
