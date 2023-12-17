@@ -96,6 +96,7 @@
                             I understand
                         </label>
                     </div>
+                    <div class="text-body-secondary">You may need to refresh the page after updating to see the changes.</div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
