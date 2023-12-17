@@ -135,6 +135,11 @@ export default {
                 .catch(error => {
                     console.log(error);
                 });
+
+            // Reload the page to ensure that the update is applied
+            // I think it's twice for Safari compatibility
+            location.reload()
+            window.location.reload()
         },
         resetConfirmationVariables() {
             this.commandAllowed = false;
