@@ -526,5 +526,5 @@ def print_calendar():
     printer.print_calendar(calendar_events, date)
 
 if __name__ == '__main__':
-    notifications.notification("Daily Display is starting up", title="Backend started", priority="low", tags="rocket")
+    notifications.notification(f"IP: {local_ip.get_ip()}", title="Daily Display turned on", priority="low", tags="rocket")
     app.run(debug=True, host='0.0.0.0')
