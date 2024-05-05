@@ -10,7 +10,7 @@ from printer import Printer
 import os
 import subprocess
 import qrcode
-import local_ip
+import my_ip
 from apscheduler.schedulers.background import BackgroundScheduler
 from dispenser import Dispenser
 from tzlocal import get_localzone
@@ -430,16 +430,15 @@ def feed_printer():
 @app.route('/api/print_qr', methods=['GET'])
 def print_qr():
     # get local ip address
-    ip = local_ip.get_ip()
-    link = f"http://{ip}:5173"
+    local_ip = my_ip.get_local_ip()
+    link = f"http://{local_ip}:5173"
     qr = qrcode.make(link)
     printer.print_qr(qr, link, "Access on the local network")
 
     # attempt to get tailscale ip address
-    result = subprocess.check_output(['tailscale', 'ip']).decode("utf-8")
-    if "command not found" not in result:
-        ip = result.split()[0]
-        link = f"http://{ip}:5173"
+    tailscale_ip = my_ip.get_tailscale_ip()
+    if tailscale_ip is not None:
+        link = f"http://{tailscale_ip}:5173"
         qr = qrcode.make(link)
         printer.print_qr(qr, link, "Access with Tailscale enabled")
 
@@ -526,5 +525,5 @@ def print_calendar():
     printer.print_calendar(calendar_events, date)
 
 if __name__ == '__main__':
-    notifications.notification(f"IP: {local_ip.get_ip()}", title="Daily Display turned on", priority="low", tags="rocket")
+    notifications.notification("IP address: "+ my_ip.get_local_ip() + " (local)" + (f" | {my_ip.get_tailscale_ip()} (tailscale)" if my_ip.get_tailscale_ip() else ''), title="Daily Display turned on", priority="low", tags="rocket")
     app.run(debug=True, host='0.0.0.0')
